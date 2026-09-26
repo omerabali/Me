@@ -1,0 +1,414 @@
+@import "tailwindcss";
+
+/* ==========================================================================
+   DESIGN TOKENS & PALETTES
+   Aydınlık ve Karanlık mod desteğiyle modern, minimalist mühendislik estetiği.
+   ========================================================================== */
+
+:root {
+  /* --- Aydınlık Mod Renkleri ------------------------------------------ */
+  --color-paper: #f8fafc;
+  --color-paper-sunk: #f1f5f9;
+  --color-surface: #ffffff;
+  --color-surface-card: #ffffff;
+  --color-surface-hover: #f8fafc;
+
+  --color-ink: #0f172a;
+  --color-ink-2: #475569;
+  --color-ink-3: #94a3b8;
+
+  --color-rule: #e2e8f0;
+  --color-rule-strong: #cbd5e1;
+
+  --color-accent: #2563eb;
+  --color-accent-deep: #1d4ed8;
+  --color-accent-wash: #eff6ff;
+
+  --color-positive: #10b981;
+  --color-positive-wash: #ecfdf5;
+
+  --badge-bg: rgba(241, 245, 249, 0.9);
+  --card-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.04), 0 2px 6px -1px rgba(0, 0, 0, 0.02);
+  --card-shadow-hover: 0 10px 30px -4px rgba(0, 0, 0, 0.08), 0 4px 12px -2px rgba(0, 0, 0, 0.04);
+}
+
+.dark {
+  /* --- Lüks Karanlık Mod Renkleri (Obsidian, Charcoal, Metal) --------- */
+  --color-paper: #090a0f;
+  --color-paper-sunk: #050608;
+  --color-surface: #0f1118;
+  --color-surface-card: #131722;
+  --color-surface-hover: #181d2c;
+
+  --color-ink: #f8fafc;
+  --color-ink-2: #a1a1aa;
+  --color-ink-3: #71717a;
+
+  --color-rule: rgba(255, 255, 255, 0.08);
+  --color-rule-strong: rgba(255, 255, 255, 0.16);
+
+  --color-accent: #3b82f6;
+  --color-accent-deep: #60a5fa;
+  --color-accent-wash: rgba(59, 130, 246, 0.12);
+
+  --color-positive: #10b981;
+  --color-positive-wash: rgba(16, 185, 129, 0.12);
+
+  --badge-bg: rgba(19, 23, 34, 0.85);
+  --card-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.6);
+  --card-shadow-hover: 0 20px 40px -10px rgba(0, 0, 0, 0.8), 0 0 25px rgba(59, 130, 246, 0.1);
+}
+
+@theme {
+  --color-paper: var(--color-paper);
+  --color-paper-sunk: var(--color-paper-sunk);
+  --color-surface: var(--color-surface);
+  --color-surface-card: var(--color-surface-card);
+  --color-surface-hover: var(--color-surface-hover);
+
+  --color-ink: var(--color-ink);
+  --color-ink-2: var(--color-ink-2);
+  --color-ink-3: var(--color-ink-3);
+
+  --color-rule: var(--color-rule);
+  --color-rule-strong: var(--color-rule-strong);
+
+  --color-accent: var(--color-accent);
+  --color-accent-deep: var(--color-accent-deep);
+  --color-accent-wash: var(--color-accent-wash);
+
+  --color-positive: var(--color-positive);
+
+  /* --- Tipografi Aileleri ---------------------------------------------- */
+  --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* --- Tipografi Ölçeği ------------------------------------------------- */
+  --text-display: clamp(3rem, 1.8rem + 6vw, 6.5rem);
+  --text-display--line-height: 0.95;
+  --text-display--letter-spacing: -0.04em;
+  --text-display--font-weight: 800;
+
+  --text-h1: clamp(2rem, 1.5rem + 2.5vw, 3.5rem);
+  --text-h1--line-height: 1.05;
+  --text-h1--letter-spacing: -0.03em;
+  --text-h1--font-weight: 700;
+
+  --text-h2: clamp(1.4rem, 1.1rem + 1.2vw, 2rem);
+  --text-h2--line-height: 1.2;
+  --text-h2--letter-spacing: -0.025em;
+  --text-h2--font-weight: 700;
+
+  --text-h3: 1.125rem;
+  --text-h3--line-height: 1.4;
+  --text-h3--letter-spacing: -0.015em;
+  --text-h3--font-weight: 600;
+
+  --text-lead: 1.125rem;
+  --text-lead--line-height: 1.65;
+  --text-lead--letter-spacing: -0.01em;
+
+  --text-body: 0.9375rem;
+  --text-body--line-height: 1.7;
+  --text-body--letter-spacing: -0.005em;
+
+  --text-meta: 0.875rem;
+  --text-meta--line-height: 1.55;
+
+  --text-micro: 0.75rem;
+  --text-micro--line-height: 1.5;
+  --text-micro--letter-spacing: 0.06em;
+
+  --ease-editorial: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-snap: cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+/* ==========================================================================
+   TABAN STİLLERİ
+   ========================================================================== */
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: var(--text-body);
+    line-height: 1.7;
+    overflow-x: hidden;
+    transition: background-color 0.25s ease, color 0.25s ease;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  :target {
+    scroll-margin-top: 6rem;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  ::selection {
+    background-color: var(--color-accent);
+    color: #ffffff;
+  }
+
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--color-paper);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-rule-strong);
+    border-radius: 999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--color-ink-3);
+  }
+}
+
+/* ==========================================================================
+   BİLEŞEN YARDIMCILARI VE KART EFEKTLERİ
+   ========================================================================== */
+
+@layer components {
+  .shell {
+    width: 100%;
+    max-width: 1440px;
+    margin-inline: auto;
+    padding-inline: 1.5rem;
+  }
+
+  @media (min-width: 768px) {
+    .shell {
+      padding-inline: 3rem;
+    }
+  }
+
+  @media (min-width: 1280px) {
+    .shell {
+      padding-inline: 4rem;
+    }
+  }
+
+  .shell-wide {
+    width: 100%;
+    max-width: 1680px;
+    margin-inline: auto;
+    padding-inline: 1.5rem;
+  }
+
+  @media (min-width: 768px) {
+    .shell-wide {
+      padding-inline: 3rem;
+    }
+  }
+
+  /* Standartlaşmış Kart Stili */
+  .neo-card {
+    background-color: var(--color-surface-card);
+    border: 1px solid var(--color-rule);
+    border-radius: 1rem;
+    box-shadow: var(--card-shadow);
+    transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
+  }
+
+  .neo-card:hover {
+    border-color: var(--color-rule-strong);
+    box-shadow: var(--card-shadow-hover);
+  }
+
+  /* Etiket / Çip Stili */
+  .skill-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.35rem 0.85rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    border-radius: 9999px;
+    border: 1px solid var(--color-rule);
+    background-color: var(--color-surface);
+    color: var(--color-ink-2);
+    transition: all 0.2s ease;
+  }
+
+  .skill-pill:hover {
+    border-color: var(--color-accent);
+    color: var(--color-ink);
+    background-color: var(--color-accent-wash);
+  }
+
+  /* Yanıp Sönen Canlı Durum Noktası */
+  .pulse-dot {
+    position: relative;
+    display: inline-flex;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 9999px;
+    background-color: #10b981;
+  }
+
+  .pulse-dot::after {
+    content: '';
+    position: absolute;
+    inset: -3px;
+    border-radius: 9999px;
+    background-color: #10b981;
+    opacity: 0.4;
+    animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  @keyframes pulse-ring {
+    0% {
+      transform: scale(0.9);
+      opacity: 0.6;
+    }
+    50% {
+      transform: scale(1.6);
+      opacity: 0;
+    }
+    100% {
+      transform: scale(0.9);
+      opacity: 0;
+    }
+  }
+
+  /* 3D Görsel Kartlar için Yansıma & Glassmorphism */
+  .glass-badge {
+    background: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.06);
+  }
+
+  .dark .glass-badge {
+    background: rgba(17, 24, 39, 0.75);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
+  }
+
+  /* Çizgi Link Vurgusu */
+  .link-underline {
+    background-image: linear-gradient(currentColor, currentColor);
+    background-size: 0% 1px;
+    background-position: 0 100%;
+    background-repeat: no-repeat;
+    transition: background-size 0.3s var(--ease-editorial);
+  }
+  .link-underline:hover,
+  .link-underline:focus-visible {
+    background-size: 100% 1px;
+  }
+}
+
+/* ==========================================================================
+   MARKDOWN PROSE STYLES (README Dokümantasyon Görüntüleyicisi)
+   ========================================================================== */
+
+.markdown-prose {
+  line-height: 1.75;
+}
+
+.markdown-prose ul {
+  list-style-type: disc !important;
+  padding-left: 1.5rem !important;
+  margin-top: 0.5rem !important;
+  margin-bottom: 0.75rem !important;
+}
+
+.markdown-prose ol {
+  list-style-type: decimal !important;
+  padding-left: 1.5rem !important;
+  margin-top: 0.5rem !important;
+  margin-bottom: 0.75rem !important;
+}
+
+.markdown-prose li {
+  display: list-item !important;
+  margin-bottom: 0.35rem !important;
+}
+
+.markdown-prose strong {
+  font-weight: 700 !important;
+  color: var(--color-ink);
+}
+
+.markdown-prose hr {
+  border-color: var(--color-rule);
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+/* ==========================================================================
+   ANİMASYONLAR
+   ========================================================================== */
+
+.reveal {
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 0.6s var(--ease-editorial), transform 0.6s var(--ease-editorial);
+  transition-delay: var(--reveal-delay, 0ms);
+  will-change: opacity, transform;
+}
+
+.reveal[data-visible="true"] {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none !important;
+  }
+}
+
+/* --- Marquee & Sinematik Döngüler --- */
+@keyframes marquee {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-33.333%);
+  }
+}
+
+.animate-marquee {
+  animation: marquee 32s linear infinite;
+}
+
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 18s linear infinite;
+}
+
