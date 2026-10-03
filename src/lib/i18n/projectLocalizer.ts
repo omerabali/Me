@@ -1,60 +1,62 @@
 import type { Project } from '../../types/project';
 import type { Language } from './translations';
 
-export const CATEGORY_TRANSLATIONS: Record<Language, Record<string, string>> = {
+export const CANONICAL_CATEGORIES = ['AI/ML', 'Web', 'Mobile', 'Software'] as const;
+export type CanonicalCategory = (typeof CANONICAL_CATEGORIES)[number];
+
+export function normalizeCategoryKey(category?: string | null): CanonicalCategory {
+  if (!category) return 'Software';
+  const c = category.toLowerCase().trim();
+  if (
+    c.includes('ai') ||
+    c.includes('ml') ||
+    c.includes('yapay') ||
+    c.includes('öğrenme') ||
+    c.includes('görü') ||
+    c.includes('intelligence')
+  ) {
+    return 'AI/ML';
+  }
+  if (c.includes('mobil') || c.includes('mobile') || c.includes('flutter') || c.includes('dart')) {
+    return 'Mobile';
+  }
+  if (
+    c.includes('web') ||
+    c.includes('bulut') ||
+    c.includes('full-stack') ||
+    c.includes('cloud') ||
+    c.includes('stack') ||
+    c.includes('frontend')
+  ) {
+    return 'Web';
+  }
+  return 'Software';
+}
+
+export const CATEGORY_TRANSLATIONS: Record<Language, Record<CanonicalCategory, string>> = {
   tr: {
-    'Yapay Zeka': 'Yapay Zeka',
     'AI/ML': 'AI / Makine Öğrenmesi',
-    'Makine Öğrenmesi': 'Makine Öğrenmesi & Veri',
-    'Bilgisayarlı Görü': 'Bilgisayarlı Görü',
-    'Mobil Uygulama': 'Mobil Uygulamalar',
-    'Mobil & Yapay Zeka': 'Mobil & Yapay Zeka',
-    'Yazılım': 'Yazılım & Algoritmalar',
-    'Web / Bulut': 'Web & Bulut',
-    'Web & İletişim': 'Web & İletişim',
-    'Veri & Analitik': 'Veri & Analitik',
-    'Backend': 'Arka Uç (Backend)',
-    'Backend / Systems': 'Arka Uç & Sistemler',
-    'Mobil': 'Mobil Uygulamalar',
-    'Full-Stack': 'Full-Stack Web',
+    'Web': 'Web & Bulut',
+    'Mobile': 'Mobil Uygulamalar',
+    'Software': 'Yazılım & Algoritmalar',
   },
   en: {
-    'Yapay Zeka': 'Artificial Intelligence',
-    'AI/ML': 'AI / Machine Learning',
-    'Makine Öğrenmesi': 'Machine Learning & Data',
-    'Bilgisayarlı Görü': 'Computer Vision',
-    'Mobil Uygulama': 'Mobile Applications',
-    'Mobil & Yapay Zeka': 'Mobile & AI',
-    'Yazılım': 'Software & Algorithms',
-    'Web / Bulut': 'Web & Cloud',
-    'Web & İletişim': 'Web & Real-Time',
-    'Veri & Analitik': 'Data & Analytics',
-    'Backend': 'Backend & Systems',
-    'Backend / Systems': 'Backend & Systems',
-    'Mobil': 'Mobile Applications',
-    'Full-Stack': 'Full-Stack Web',
+    'AI/ML': 'AI & Machine Learning',
+    'Web': 'Web & Cloud',
+    'Mobile': 'Mobile Applications',
+    'Software': 'Software & Systems',
   },
   de: {
-    'Yapay Zeka': 'Künstliche Intelligenz',
-    'AI/ML': 'KI / Maschinelles Lernen',
-    'Makine Öğrenmesi': 'Maschinelles Lernen & Daten',
-    'Bilgisayarlı Görü': 'Computer Vision',
-    'Mobil Uygulama': 'Mobile Anwendungen',
-    'Mobil & Yapay Zeka': 'Mobile & KI',
-    'Yazılım': 'Software & Algorithmen',
-    'Web / Bulut': 'Web & Cloud',
-    'Web & İletişim': 'Web & Echtzeit',
-    'Veri & Analitik': 'Daten & Analytik',
-    'Backend': 'Backend & Systeme',
-    'Backend / Systems': 'Backend & Systeme',
-    'Mobil': 'Mobile Anwendungen',
-    'Full-Stack': 'Full-Stack Web',
+    'AI/ML': 'KI & Maschinelles Lernen',
+    'Web': 'Web & Cloud',
+    'Mobile': 'Mobile Anwendungen',
+    'Software': 'Software & Systeme',
   },
 };
 
 export function getLocalizedCategory(category: string | undefined | null, lang: Language): string {
-  if (!category) return lang === 'tr' ? 'Yazılım' : lang === 'de' ? 'Software' : 'Software';
-  return CATEGORY_TRANSLATIONS[lang]?.[category] || category;
+  const key = normalizeCategoryKey(category);
+  return CATEGORY_TRANSLATIONS[lang][key] || key;
 }
 
 interface ProjectTextMap {
@@ -375,16 +377,88 @@ const PROJECT_TRANSLATIONS: Record<string, Partial<Record<Language, ProjectTextM
       readme_summary: 'Satellitenbild-Verarbeitungsplattform für Umweltmonitoring und Risikobewertung.',
     },
   },
+  'me': {
+    tr: {
+      display_name: 'Me — Kişisel Portfolyo & Mühendislik Vitrini',
+      description: 'React 19, Vite, TypeScript, Tailwind CSS v4 ve i18n çok dilli mimari ile geliştirilen editoryal web portfolyosu.',
+      readme_summary: 'Kişisel yazılım mühendisliği portfolyosu ve GitHub vitrini.',
+      tech_stack: ['React 19', 'TypeScript', 'Tailwind CSS', 'Vite', 'FastAPI'],
+      features: [
+        'React 19 & Tailwind CSS v4 modern editoryal neo-brutalist arayüz',
+        'Canlı GitHub API ve README senkronizasyon motoru',
+        'TR, EN ve DE dillerinde tam reaktif çok dilli altyapı',
+      ],
+    },
+    en: {
+      display_name: 'Me — Personal Portfolio & Engineering Showcase',
+      description: 'Modern, editorial software engineering portfolio built with React 19, Vite, TypeScript, and Tailwind CSS v4.',
+      readme_summary: 'Personal engineering portfolio and GitHub project showcase.',
+      tech_stack: ['React 19', 'TypeScript', 'Tailwind CSS', 'Vite', 'FastAPI'],
+      features: [
+        'React 19 & Tailwind CSS v4 modern editorial neo-brutalist UI',
+        'Live GitHub API and markdown README synchronization engine',
+        'Full reactive multilingual architecture supporting TR, EN, and DE',
+      ],
+    },
+    de: {
+      display_name: 'Me — Persönliches Portfolio & Engineering Showcase',
+      description: 'Modernes, redaktionelles Software-Portfolio mit React 19, Vite, TypeScript und Tailwind CSS v4.',
+      readme_summary: 'Persönliches Engineering-Portfolio und GitHub-Showcase.',
+      tech_stack: ['React 19', 'TypeScript', 'Tailwind CSS', 'Vite', 'FastAPI'],
+      features: [
+        'React 19 & Tailwind CSS v4 moderne redaktionelle Benutzeroberfläche',
+        'Live-GitHub-API- und Markdown-README-Synchronisations-Engine',
+        'Voll reaktive mehrsprachige Architektur für TR, EN und DE',
+      ],
+    },
+  },
+  'omerabali': {
+    tr: {
+      display_name: 'omerabali — GitHub Geliştirici Profili & Ekosistem',
+      description: 'Yazılım mühendisliği yetkinlikleri, açık kaynak çalışmaları ve kişisel GitHub geliştirici profili dokümantasyonu.',
+      readme_summary: 'Kişisel GitHub geliştirici profili ve açık kaynak ekosistemi.',
+      tech_stack: ['Markdown', 'GitHub Actions', 'Python', 'TypeScript'],
+      features: [
+        'Açık kaynak çalışmaları ve GitHub profil özeti',
+        'Kişisel mühendislik yetkinlikleri ve teknoloji haritası',
+      ],
+    },
+    en: {
+      display_name: 'omerabali — GitHub Developer Profile & Ecosystem',
+      description: 'Software engineering competencies, open-source projects, and personal GitHub developer profile documentation.',
+      readme_summary: 'Personal GitHub developer profile and open-source ecosystem.',
+      tech_stack: ['Markdown', 'GitHub Actions', 'Python', 'TypeScript'],
+      features: [
+        'Open-source highlights and GitHub profile overview',
+        'Engineering competencies and technology matrix',
+      ],
+    },
+    de: {
+      display_name: 'omerabali — GitHub-Entwicklerprofil & Ökosystem',
+      description: 'Software-Engineering-Kompetenzen, Open-Source-Arbeiten und persönliche GitHub-Entwicklerprofil-Dokumentation.',
+      readme_summary: 'Persönliches GitHub-Entwicklerprofil und Open-Source-Ökosystem.',
+      tech_stack: ['Markdown', 'GitHub Actions', 'Python', 'TypeScript'],
+      features: [
+        'Open-Source-Highlights und GitHub-Profilübersicht',
+        'Engineering-Kompetenzen und Technologiematrix',
+      ],
+    },
+  },
 };
 
 export function getLocalizedProject(project: Project, lang: Language): Project {
   const rawKey = (project.slug || project.name || '').toLowerCase().replace(/_/g, '-');
   const cleanKey = rawKey.replace(/-/g, '');
 
-  const translation =
-    PROJECT_TRANSLATIONS[rawKey]?.[lang] ||
-    PROJECT_TRANSLATIONS[cleanKey]?.[lang] ||
-    Object.entries(PROJECT_TRANSLATIONS).find(([k]) => rawKey.includes(k) || k.includes(rawKey))?.[1]?.[lang];
+  let translation = PROJECT_TRANSLATIONS[rawKey]?.[lang] || PROJECT_TRANSLATIONS[cleanKey]?.[lang];
+
+  // Sadece anahtar 3 karakterden büyükse önek araması yap (asla "me" gibi kısa isimleri "readme-genie" ile eşleme!)
+  if (!translation && rawKey.length > 3) {
+    const entry = Object.entries(PROJECT_TRANSLATIONS).find(
+      ([k]) => k.length > 3 && (rawKey === k || rawKey.startsWith(k))
+    );
+    translation = entry?.[1]?.[lang];
+  }
 
   const localizedCat = getLocalizedCategory(project.category, lang);
 

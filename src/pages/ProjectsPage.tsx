@@ -12,7 +12,12 @@ import { Skeleton } from '../components/ui/Skeleton';
 import { GithubIcon } from '../components/ui/Icons';
 import { ProjectModal } from '../components/ui/ProjectModal';
 import { useTranslation } from '../lib/i18n/LanguageContext';
-import { getLocalizedCategory, getLocalizedProject } from '../lib/i18n/projectLocalizer';
+import {
+  CANONICAL_CATEGORIES,
+  normalizeCategoryKey,
+  getLocalizedCategory,
+  getLocalizedProject,
+} from '../lib/i18n/projectLocalizer';
 import type { Project } from '../types/project';
 
 const ALL = 'all';
@@ -29,42 +34,63 @@ export const ProjectsPage: React.FC = () => {
   }, [projects, language]);
 
   const categories = useMemo(() => {
-    const unique = Array.from(
-      new Set(projects.map((p) => p.category).filter(Boolean)),
-    ) as string[];
-    return [ALL, ...unique.sort()];
-  }, [projects]);
+    return [ALL, ...CANONICAL_CATEGORIES];
+  }, []);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLocaleLowerCase(language === 'tr' ? 'tr' : 'en');
 
     const result = localizedProjects.filter((p) => {
-      // p.category is already localized, or compare raw
       const rawProject = projects.find((rp) => rp.slug === p.slug || rp.name === p.name);
-      const matchesCategory =
-        category === ALL ||
-        rawProject?.category === category ||
-        p.category === category;
-      if (!matchesCategory) return false;
+
+      // 1. Kategori Kontrolü (Normalize edilmiş 4 ana kategoriyle %100 kusursuz eşleşme)
+      const projectCatKey = normalizeCategoryKey(p.category || rawProject?.category);
+      if (category !== ALL && projectCatKey !== category) {
+        return false;
+      }
+
       if (!q) return true;
 
-      const haystack = [
-        p.display_name,
-        p.name,
-        p.description,
-        p.readme_summary,
-        p.category,
-        ...(p.tech_stack || []),
-      ]
-        .filter(Boolean)
-        .join(' ')
-        .toLocaleLowerCase(language === 'tr' ? 'tr' : 'en');
+      // 2. Akıllı Arama Kontrolü
+      const name = (p.name || '').toLocaleLowerCase('en');
+      const displayName = (p.display_name || '').toLocaleLowerCase(language === 'tr' ? 'tr' : 'en');
+      const slug = (p.slug || '').toLocaleLowerCase('en');
+      const tech = (p.tech_stack || []).map((t) => t.toLocaleLowerCase('en'));
+      const catLocalized = (p.category || '').toLocaleLowerCase(language === 'tr' ? 'tr' : 'en');
 
-      return haystack.includes(q);
+      // A) İsim veya Başlık doğrudan eşleşmesi (örn: "me" yazınca repo adı "Me" olan proje anında eşleşir)
+      if (name === q || slug === q || displayName === q) return true;
+      if (name.includes(q) || slug.includes(q) || displayName.includes(q)) return true;
+
+      // B) Teknoloji veya Kategori eşleşmesi (örn: "react", "dart", "python")
+      if (tech.some((t) => t.includes(q)) || catLocalized.includes(q)) return true;
+
+      // C) Sadece 3 harften uzun aramalarda açıklama/README metnine bak
+      // (Böylece 2 harfli "me" arandığında "değerlendirme" veya "geliştirme" gibi kelimeler yanlışlıkla eşleşmez!)
+      if (q.length > 2) {
+        const desc = (p.description || '').toLocaleLowerCase(language === 'tr' ? 'tr' : 'en');
+        const readme = (p.readme_summary || '').toLocaleLowerCase(language === 'tr' ? 'tr' : 'en');
+        if (desc.includes(q) || readme.includes(q)) return true;
+      }
+
+      return false;
     });
 
-    // En son push yapılan / güncellenen repo en üstte (GitHub ile birebir aynı sıra)
     return result.sort((a, b) => {
+      // Arama yapılıyorsa tam isim eşleşenleri (örn: "Me") listenin en tepesine al
+      if (q) {
+        const aExact = a.name?.toLowerCase() === q || a.slug?.toLowerCase() === q;
+        const bExact = b.name?.toLowerCase() === q || b.slug?.toLowerCase() === q;
+        if (aExact && !bExact) return -1;
+        if (!aExact && bExact) return 1;
+
+        const aStarts = a.name?.toLowerCase().startsWith(q) || a.display_name?.toLowerCase().startsWith(q);
+        const bStarts = b.name?.toLowerCase().startsWith(q) || b.display_name?.toLowerCase().startsWith(q);
+        if (aStarts && !bStarts) return -1;
+        if (!aStarts && bStarts) return 1;
+      }
+
+      // En son push yapılan / güncellenen repo en üstte (GitHub ile birebir aynı sıra)
       const timeA = new Date(a.pushed_at || a.updated_at || a.created_at || 0).getTime();
       const timeB = new Date(b.pushed_at || b.updated_at || b.created_at || 0).getTime();
       return timeB - timeA;
