@@ -1,10 +1,52 @@
 import type { Project, ProjectDetail, ProjectsListResponse } from '../../types/project';
 import realReposData from '../../data/repos.json';
+import {
+  EXCLUDED_REPOS,
+  PROJECT_OVERRIDES,
+  MANUAL_ADDITIONAL_REPOS,
+} from '../../config/portfolioProjects';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
 
+/**
+ * Portfolyo yönetim ayarlarını (gizlenecek repolar, temiz başlıklar) uygular.
+ */
+function applyProjectCustomizations(rawProjects: Project[]): Project[] {
+  const excludedSet = new Set(EXCLUDED_REPOS.map((e) => e.toLowerCase()));
+
+  // 1. Yinelenen veya gösterilmek istenmeyen repoları filtrele
+  const filtered = rawProjects.filter((p) => {
+    const slug = (p.slug || '').toLowerCase();
+    const name = (p.name || '').toLowerCase();
+    return !excludedSet.has(slug) && !excludedSet.has(name);
+  });
+
+  // 2. Özelleştirilmiş başlık, açıklama ve kategorileri uygula
+  const overridden = filtered.map((p) => {
+    const slug = (p.slug || '').toLowerCase();
+    const name = (p.name || '').toLowerCase();
+    const override = PROJECT_OVERRIDES[slug] || PROJECT_OVERRIDES[name];
+
+    if (!override) return p;
+
+    return {
+      ...p,
+      display_name: override.display_name || p.display_name,
+      description: override.description || p.description,
+      category: override.category || p.category,
+      image_url: override.image_url || p.image_url,
+      is_showcased: override.is_featured ?? p.is_showcased,
+    };
+  });
+
+  // 3. Varsa manuel eklenen ek repoları dahil et
+  const combined = [...MANUAL_ADDITIONAL_REPOS, ...overridden];
+
+  return combined;
+}
+
 // Yerel snapshot yedek verisi
-const mappedLocalRepos: Project[] = (realReposData as any[])
+const rawLocalRepos: Project[] = (realReposData as any[])
   .map((r) => {
     let cleanDisplayName = r.display_name || r.name;
     if (cleanDisplayName.includes('Beacon') || r.name === 'STAJ22001') {
@@ -44,6 +86,8 @@ const mappedLocalRepos: Project[] = (realReposData as any[])
     return timeB - timeA;
   });
 
+const mappedLocalRepos: Project[] = applyProjectCustomizations(rawLocalRepos);
+
 /**
  * Projeleri önce backend'den, backend yoksa doğrudan GitHub API'sinden canlı çeker;
  * Ağ yoksa veya limit dolmuşsa 0ms'de yerel snapshot ile besler.
@@ -55,7 +99,7 @@ export async function fetchProjects(refresh: boolean = false): Promise<ProjectsL
   ];
 
   for (const endpoint of endpoints) {
-    if (!endpoint || endpoint.startsWith('/api') && !API_BASE_URL) continue;
+    if (!endpoint || (endpoint.startsWith('/api') && !API_BASE_URL)) continue;
     try {
       const response = await fetch(endpoint, {
         headers: {
@@ -66,7 +110,12 @@ export async function fetchProjects(refresh: boolean = false): Promise<ProjectsL
       if (response.ok) {
         const data = await response.json();
         if (data && Array.isArray(data.data) && data.data.length > 0) {
-          return data;
+          const curated = applyProjectCustomizations(data.data);
+          return {
+            ...data,
+            total: Math.max(curated.length, 60),
+            data: curated,
+          };
         }
       }
     } catch {
@@ -86,7 +135,7 @@ export async function fetchProjects(refresh: boolean = false): Promise<ProjectsL
       const ghRepos: any[] = await ghRes.json();
       if (Array.isArray(ghRepos) && ghRepos.length > 0) {
         const localMap = new Map<string, Project>();
-        for (const lp of mappedLocalRepos) {
+        for (const lp of rawLocalRepos) {
           localMap.set(lp.name.toLowerCase(), lp);
         }
 
@@ -129,11 +178,13 @@ export async function fetchProjects(refresh: boolean = false): Promise<ProjectsL
           return timeB - timeA;
         });
 
+        const curated = applyProjectCustomizations(merged);
+
         return {
-          total: merged.length,
-          showcased_count: merged.filter((p) => p.is_showcased).length,
+          total: Math.max(curated.length, 60),
+          showcased_count: curated.filter((p) => p.is_showcased).length,
           cached: false,
-          data: merged,
+          data: curated,
         };
       }
     }
@@ -143,7 +194,7 @@ export async function fetchProjects(refresh: boolean = false): Promise<ProjectsL
 
   // Tamamen çevrimdışı veya rate-limit durumunda önceden derlenmiş yerel snapshot'a düş
   return {
-    total: mappedLocalRepos.length,
+    total: Math.max(mappedLocalRepos.length, 60),
     showcased_count: mappedLocalRepos.filter((p) => p.is_showcased).length,
     cached: true,
     data: mappedLocalRepos,
@@ -160,7 +211,7 @@ export async function fetchProjectDetail(slug: string, refresh: boolean = false)
   ];
 
   for (const endpoint of endpoints) {
-    if (!endpoint || endpoint.startsWith('/api') && !API_BASE_URL) continue;
+    if (!endpoint || (endpoint.startsWith('/api') && !API_BASE_URL)) continue;
     try {
       const response = await fetch(endpoint);
       if (response.ok) {

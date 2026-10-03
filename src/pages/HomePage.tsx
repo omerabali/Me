@@ -108,7 +108,7 @@ export const HomePage: React.FC = () => {
                 <div className="mt-12 grid grid-cols-3 gap-6 sm:gap-10 border-t border-rule pt-8">
                   <div>
                     <div className="font-display text-3xl sm:text-5xl font-black text-ink tracking-tight">
-                      {loading ? <Skeleton className="h-10 w-16" /> : <CountUp end={total || 59} />}
+                      {loading ? <Skeleton className="h-10 w-16" /> : <CountUp end={Math.max(total, 60)} />}
                     </div>
                     <span className="font-mono text-[11px] text-ink-3 uppercase tracking-wider block mt-1 font-semibold">
                       {t.home.statRepos}
@@ -156,7 +156,7 @@ export const HomePage: React.FC = () => {
                 to="/projects"
                 className="group inline-flex items-center gap-2 font-mono text-xs font-bold uppercase tracking-wider text-ink hover:text-accent transition-colors"
               >
-                <span>{t.home.viewAllRepos} ({total})</span>
+                <span>{t.home.viewAllRepos} ({Math.max(total, 60)})</span>
                 <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
               </Link>
             </div>

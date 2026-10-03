@@ -313,7 +313,7 @@ export const translations: Record<Language, Translations> = {
       bioP2:
         'Yapay zeka zekasını kullanıcının parmak uçlarına taşımak adına; Flutter ve Dart ile modern, reaktif ve yüksek performanslı cross-platform mobil uygulamalar geliştiriyorum. Eş zamanlı olarak React, Next.js, TypeScript ve FastAPI ile asenkron, ölçeklenebilir ve sağlam Full-Stack web mimarileri inşa ediyorum.',
       bioP3:
-        'Kırklareli Üniversitesi Yazılım Mühendisliği akademik başarım (3.62 GPA), Yukatek Bilişim A.Ş. bünyesinde tamamladığım Retrieval-Augmented Generation (RAG) & LLM Ar-Ge stajım ve açık kaynak ekosisteminde geliştirdiğim 59+ proje ile; Python, Java, C#, Dart ve TypeScript teknolojilerinde yüksek mühendislik standartlarıyla çözümler üretiyorum.',
+        'Kırklareli Üniversitesi Yazılım Mühendisliği akademik başarım (3.62 GPA), Yukatek Bilişim A.Ş. bünyesinde tamamladığım Retrieval-Augmented Generation (RAG) & LLM Ar-Ge stajım ve açık kaynak ekosisteminde geliştirdiğim 60+ proje ile; Python, Java, C#, Dart ve TypeScript teknolojilerinde yüksek mühendislik standartlarıyla çözümler üretiyorum.',
       quote:
         'Machine Learning ve Derin Öğrenme vizyonunu; modern mobil ve full-stack mühendisliğiyle buluşturarak hayatı kolaylaştıran dijital ekosistemler inşa ediyorum.',
       skillsTitle: 'Yetenekler & Uzmanlıklar',
@@ -698,7 +698,7 @@ export const translations: Record<Language, Translations> = {
       bioP2:
         'To deliver intelligence directly to users, I build sleek, reactive, and high-performance cross-platform mobile apps with Flutter & Dart. Concurrently, I architect scalable, asynchronous Full-Stack web systems powered by React 19, Next.js, TypeScript, and FastAPI.',
       bioP3:
-        'Backed by my Software Engineering academic honors (Kırklareli University - 3.62 GPA), my R&D internship at Yukatek Bilişim A.Ş. focusing on RAG & LLMs, and 59+ open-source repositories; I deliver robust engineering solutions across Python, Java, C#, Dart, and TypeScript.',
+        'Backed by my Software Engineering academic honors (Kırklareli University - 3.62 GPA), my R&D internship at Yukatek Bilişim A.Ş. focusing on RAG & LLMs, and 60+ open-source repositories; I deliver robust engineering solutions across Python, Java, C#, Dart, and TypeScript.',
       quote:
         'Channeling the visionary power of Machine Learning & Deep Learning into everyday life through cutting-edge mobile and full-stack engineering.',
       skillsTitle: 'Skills & Capabilities',
@@ -1083,7 +1083,7 @@ export const translations: Record<Language, Translations> = {
       bioP2:
         'Um intelligente Funktionen direkt an Benutzer zu liefern, entwickle ich reaktive und performante Cross-Platform-Apps mit Flutter & Dart. Parallel dazu erstelle ich skalierbare, asynchrone Full-Stack-Webarchitekturen mit React 19, Next.js, TypeScript und FastAPI.',
       bioP3:
-        'Mit akademischen Spitzenleistungen (Universität Kırklareli - 3.62 GPA), meinem F&E-Praktikum bei Yukatek Bilişim A.Ş. (RAG & LLMs) und 59+ Open-Source-Repositories liefere ich solide Ingenieurlösungen in Python, Java, C#, Dart und TypeScript.',
+        'Mit akademischen Spitzenleistungen (Universität Kırklareli - 3.62 GPA), meinem F&E-Praktikum bei Yukatek Bilişim A.Ş. (RAG & LLMs) und 60+ Open-Source-Repositories liefere ich solide Ingenieurlösungen in Python, Java, C#, Dart und TypeScript.',
       quote:
         'Verbindung von Machine Learning & Deep Learning mit moderner mobiler und Full-Stack-Technik zur Entwicklung zukunftssicherer digitaler Produkte.',
       skillsTitle: 'Fähigkeiten & Kompetenzen',
