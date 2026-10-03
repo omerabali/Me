@@ -1,7 +1,8 @@
-import React from 'react';
-import { ArrowUpRight, BookOpen, Code2, ExternalLink, GitFork, Star, X } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { ArrowUpRight, BookOpen, Code2, ExternalLink, GitFork, Loader2, Star, X } from 'lucide-react';
 import { GithubIcon } from './Icons';
-import { MarkdownViewer } from './MarkdownViewer';
+import { ReadmeView } from './ReadmeView';
+import { fetchReadme } from '../../lib/github';
 import { useTranslation } from '../../lib/i18n/LanguageContext';
 import { getLocalizedCategory } from '../../lib/i18n/projectLocalizer';
 import type { Project } from '../../types/project';
@@ -13,6 +14,46 @@ interface ProjectModalProps {
 
 export const ProjectModal: React.FC<ProjectModalProps> = ({ project, onClose }) => {
   const { t, language } = useTranslation();
+  const [readme, setReadme] = useState<string | null>(null);
+  const [loadingReadme, setLoadingReadme] = useState(false);
+
+  useEffect(() => {
+    if (!project) {
+      setReadme(null);
+      return;
+    }
+
+    let active = true;
+
+    // Varsa önbellek / derleme zamanı yedeğini anında göster (0ms paint)
+    const initialText = project.readme_raw || project.readme_detail || null;
+    if (initialText) {
+      setReadme(initialText);
+    } else {
+      setLoadingReadme(true);
+    }
+
+    // GitHub'ın hazır /readme endpoint'i ile lazy olarak canlı README çek
+    fetchReadme(project.name)
+      .then((liveText) => {
+        if (!active) return;
+        if (liveText) {
+          setReadme(liveText);
+        } else if (!initialText) {
+          setReadme(null);
+        }
+      })
+      .catch((err) => {
+        console.warn('Could not fetch live README:', err);
+      })
+      .finally(() => {
+        if (active) setLoadingReadme(false);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [project?.name]);
 
   if (!project) return null;
 
@@ -122,16 +163,28 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({ project, onClose }) 
               <span>{t.modal.readmeTitle}</span>
             </h4>
 
-            <div className="rounded-2xl border border-rule bg-paper p-6 shadow-xs select-text">
-              <MarkdownViewer
-                content={
-                  project.readme_raw ||
-                  project.readme_detail ||
-                  `# ${project.display_name || project.name}\n\n${
-                    project.description || project.readme_summary || 'README content not available.'
-                  }`
-                }
-              />
+            <div className="rounded-2xl border border-rule bg-paper p-6 shadow-xs select-text min-h-[160px]">
+              {loadingReadme && !readme ? (
+                <div className="flex flex-col items-center justify-center py-12 gap-3 text-ink-3">
+                  <Loader2 className="h-6 w-6 animate-spin text-accent" />
+                  <span className="text-xs font-mono">GitHub üzerinden README alınıyor...</span>
+                </div>
+              ) : readme ? (
+                <ReadmeView repo={project.name} md={readme} />
+              ) : (
+                <div className="py-8 text-center text-ink-3">
+                  <p className="text-sm font-semibold">Bu depo için henüz bir README dosyası bulunmuyor.</p>
+                  <a
+                    href={project.github_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 mt-3 text-xs text-accent hover:underline font-mono"
+                  >
+                    <span>GitHub'da Görüntüle</span>
+                    <ArrowUpRight className="h-3.5 w-3.5" />
+                  </a>
+                </div>
+              )}
             </div>
           </div>
         </div>

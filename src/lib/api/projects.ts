@@ -5,6 +5,7 @@ import {
   PROJECT_OVERRIDES,
   MANUAL_ADDITIONAL_REPOS,
 } from '../../config/portfolioProjects';
+import { fetchRepos, fetchReadme } from '../github';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
 
@@ -81,8 +82,8 @@ const rawLocalRepos: Project[] = (realReposData as any[])
     };
   })
   .sort((a, b) => {
-    const timeA = new Date(a.created_at || a.pushed_at || a.updated_at || 0).getTime();
-    const timeB = new Date(b.created_at || b.pushed_at || b.updated_at || 0).getTime();
+    const timeA = new Date(a.pushed_at || a.updated_at || a.created_at || 0).getTime();
+    const timeB = new Date(b.pushed_at || b.updated_at || b.created_at || 0).getTime();
     return timeB - timeA;
   });
 
@@ -123,73 +124,67 @@ export async function fetchProjects(refresh: boolean = false): Promise<ProjectsL
     }
   }
 
-  // Backend kapalıysa (örneğin Vercel frontend sunumu), doğrudan GitHub API'sinden canlı depoları çek
+  // Doğrudan GitHub API'sinden canlı depoları çek
   try {
-    const ghRes = await fetch('https://api.github.com/users/omerabali/repos?sort=pushed&per_page=100', {
-      headers: {
-        'Accept': 'application/vnd.github.v3+json',
-      },
-    });
+    const ghRepos = await fetchRepos();
 
-    if (ghRes.ok) {
-      const ghRepos: any[] = await ghRes.json();
-      if (Array.isArray(ghRepos) && ghRepos.length > 0) {
-        const localMap = new Map<string, Project>();
-        for (const lp of rawLocalRepos) {
-          localMap.set(lp.name.toLowerCase(), lp);
+    if (Array.isArray(ghRepos) && ghRepos.length > 0) {
+      const localMap = new Map<string, Project>();
+      for (const lp of rawLocalRepos) {
+        localMap.set(lp.name.toLowerCase(), lp);
+      }
+
+      const merged: Project[] = ghRepos.map((r: any) => {
+        const local = localMap.get(r.name.toLowerCase());
+        let cleanDisplayName = local?.display_name || r.name;
+        if (cleanDisplayName.includes('Beacon') || r.name === 'STAJ22001') {
+          cleanDisplayName = 'STAJ22001 — Staj Dosyası & Projeleri';
         }
 
-        const merged: Project[] = ghRepos.map((r) => {
-          const local = localMap.get(r.name.toLowerCase());
-          let cleanDisplayName = local?.display_name || r.name;
-          if (cleanDisplayName.includes('Beacon') || r.name === 'STAJ22001') {
-            cleanDisplayName = 'STAJ22001 — Staj Dosyası & Projeleri';
-          }
-
-          return {
-            slug: (r.name || '').toLowerCase(),
-            name: r.name,
-            display_name: cleanDisplayName,
-            description: local?.description || r.description || null,
-            readme_h1: local?.readme_h1 || null,
-            readme_detail: local?.readme_detail || null,
-            readme_summary: local?.readme_summary || null,
-            readme_raw: local?.readme_raw || null,
-            readme_html: local?.readme_html || null,
-            image_url: local?.image_url || `https://opengraph.githubassets.com/1/omerabali/${r.name}`,
-            tech_stack: local?.tech_stack || (r.language ? [r.language] : []),
-            features: local?.features || [],
-            category: local?.category || 'Yazılım',
-            languages: local?.languages || (r.language ? { [r.language]: 100 } : {}),
-            github_url: r.html_url || `https://github.com/omerabali/${r.name}`,
-            homepage: r.homepage || local?.homepage || null,
-            stars: r.stargazers_count ?? local?.stars ?? 0,
-            forks: r.forks_count ?? local?.forks ?? 0,
-            open_issues: r.open_issues_count ?? 0,
-            topics: r.topics || local?.topics || [],
-            is_showcased: local?.is_showcased ?? false,
-            created_at: r.created_at || local?.created_at || new Date().toISOString(),
-            updated_at: r.updated_at || local?.updated_at || new Date().toISOString(),
-            pushed_at: r.pushed_at || local?.pushed_at || null,
-          };
-        }).sort((a, b) => {
-          const timeA = new Date(a.created_at || a.pushed_at || a.updated_at || 0).getTime();
-          const timeB = new Date(b.created_at || b.pushed_at || b.updated_at || 0).getTime();
-          return timeB - timeA;
-        });
-
-        const curated = applyProjectCustomizations(merged);
-
         return {
-          total: Math.max(curated.length, 60),
-          showcased_count: curated.filter((p) => p.is_showcased).length,
-          cached: false,
-          data: curated,
+          slug: (r.name || '').toLowerCase(),
+          name: r.name,
+          display_name: cleanDisplayName,
+          description: local?.description || r.description || null,
+          readme_h1: local?.readme_h1 || null,
+          readme_detail: local?.readme_detail || null,
+          readme_summary: local?.readme_summary || null,
+          readme_raw: local?.readme_raw || null,
+          readme_html: local?.readme_html || null,
+          image_url: local?.image_url || `https://opengraph.githubassets.com/1/omerabali/${r.name}`,
+          tech_stack: local?.tech_stack || (r.language ? [r.language] : []),
+          features: local?.features || [],
+          category: local?.category || 'Yazılım',
+          languages: local?.languages || (r.language ? { [r.language]: 100 } : {}),
+          github_url: r.html_url || `https://github.com/omerabali/${r.name}`,
+          homepage: r.homepage || local?.homepage || null,
+          stars: r.stargazers_count ?? local?.stars ?? 0,
+          forks: r.forks_count ?? local?.forks ?? 0,
+          open_issues: r.open_issues_count ?? 0,
+          topics: r.topics || local?.topics || [],
+          is_showcased: local?.is_showcased ?? false,
+          created_at: r.created_at || local?.created_at || new Date().toISOString(),
+          updated_at: r.updated_at || local?.updated_at || new Date().toISOString(),
+          pushed_at: r.pushed_at || local?.pushed_at || null,
         };
-      }
+      }).sort((a, b) => {
+        const timeA = new Date(a.pushed_at || a.updated_at || a.created_at || 0).getTime();
+        const timeB = new Date(b.pushed_at || b.updated_at || b.created_at || 0).getTime();
+        return timeB - timeA;
+      });
+
+      const curated = applyProjectCustomizations(merged);
+
+      return {
+        total: Math.max(curated.length, 60),
+        showcased_count: curated.filter((p) => p.is_showcased).length,
+        cached: false,
+        data: curated,
+      };
     }
-  } catch {
-    // GitHub API fallback
+  } catch (err) {
+    // GitHub API fallback (Rate limit veya çevrimdışı)
+    console.warn('Live GitHub repos could not be retrieved, using cached snapshot:', err);
   }
 
   // Tamamen çevrimdışı veya rate-limit durumunda önceden derlenmiş yerel snapshot'a düş
@@ -204,43 +199,17 @@ export async function fetchProjects(refresh: boolean = false): Promise<ProjectsL
 /**
  * Belirli bir projenin tam canlı GitHub ve README detayını çeker.
  */
-export async function fetchProjectDetail(slug: string, refresh: boolean = false): Promise<ProjectDetail | null> {
-  const endpoints = [
-    `${API_BASE_URL}/api/projects/${slug}${refresh ? '?refresh=true' : ''}`,
-    `http://127.0.0.1:8000/api/projects/${slug}${refresh ? '?refresh=true' : ''}`,
-  ];
-
-  for (const endpoint of endpoints) {
-    if (!endpoint || (endpoint.startsWith('/api') && !API_BASE_URL)) continue;
-    try {
-      const response = await fetch(endpoint);
-      if (response.ok) {
-        return await response.json();
-      }
-    } catch {
-      // Fallback
-    }
-  }
-
+export async function fetchProjectDetail(slug: string, _refresh: boolean = false): Promise<ProjectDetail | null> {
   const localMatch = mappedLocalRepos.find(
     (p) => p.slug === slug.toLowerCase() || p.name.toLowerCase() === slug.toLowerCase()
   );
 
-  let rawReadme = localMatch?.readme_raw || localMatch?.readme_detail || null;
+  const repoName = localMatch ? localMatch.name : slug;
 
-  // Eğer yerel eşleşmede README yoksa, GitHub Raw üzerinden canlı çekmeyi dene
+  // Lazy-fetch directly from GitHub API /readme endpoint
+  let rawReadme = await fetchReadme(repoName);
   if (!rawReadme && localMatch) {
-    for (const branch of ['main', 'master']) {
-      try {
-        const rawRes = await fetch(`https://raw.githubusercontent.com/omerabali/${localMatch.name}/${branch}/README.md`);
-        if (rawRes.ok) {
-          rawReadme = await rawRes.text();
-          break;
-        }
-      } catch {
-        // Sonraki branch
-      }
-    }
+    rawReadme = localMatch.readme_raw || localMatch.readme_detail || null;
   }
 
   if (localMatch) {
