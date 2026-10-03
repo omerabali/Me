@@ -1,32 +1,21 @@
 /**
  * Portfolyo Projeleri Yönetim ve Yapılandırma Dosyası
  * 
- * Burada:
- * 1. Portfolyoda görünmesini istemediğin (veya yinelenen) repoları EXCLUDED_REPOS içine ekleyebilirsin.
- * 2. Özel isim, açıklama ve kategori vermek istediğin projeleri PROJECT_OVERRIDES ile düzenleyebilirsin.
- * 3. GitHub'da henüz Private olan veya API'ye yansımamış 60. projeni MANUAL_ADDITIONAL_REPOS ile ekleyebilirsin.
+ * 1. Portfolyoda görünmesini istemediğin bir repo olursa EXCLUDED_REPOS dizisine adını ekleyebilirsin.
+ * 2. Özel başlık, açıklama ve kategori vermek istediğin projeleri PROJECT_OVERRIDES ile düzenleyebilirsin.
+ * 3. GitHub'da henüz Private olan projelerini MANUAL_ADDITIONAL_REPOS ile ekleyebilirsin.
  */
 
 import type { Project } from '../types/project';
 
 /**
- * Portfolyoda gösterilmeyecek / gizlenecek repolar:
- * - omerabali (Profil README deposu)
- * - public-apis (Fork repo)
- * - staj (STAJ22001'in eski kopyası / çift proje)
- * - Quiz_app (new_quiz_app ve QUIZ-APP varken eski yinelenen kopya)
- * - C-Mini-Projeler-Ornekleri (C-Mini-Projeler varken çift kopya)
+ * Portfolyoda gösterilmeyecek / gizlenecek repolar listesi.
+ * (Şu an tüm GitHub repolarının eksiksiz görünmesi için boş bırakıldı; gizlemek istediğin olursa buraya ekleyebilirsin.)
  */
-export const EXCLUDED_REPOS: string[] = [
-  'omerabali',
-  'public-apis',
-  'staj',
-  'quiz_app',
-  'c-mini-projeler-ornekleri',
-];
+export const EXCLUDED_REPOS: string[] = [];
 
 /**
- * Başlığı veya kategorisi hatalı okunan repolar için temiz başlıklar ve açıklamalar
+ * Başlığı veya açıklaması temizlenmek istenen projeler için editoryal ayarlar
  */
 export const PROJECT_OVERRIDES: Record<
   string,
@@ -38,6 +27,17 @@ export const PROJECT_OVERRIDES: Record<
     is_featured?: boolean;
   }
 > = {
+  'me': {
+    display_name: 'Me — Kişisel Portfolyo & Mühendislik Vitrini',
+    description: 'React 19, Vite, TypeScript, Tailwind CSS v4 ve i18n çok dilli mimariyle geliştirilen editoryal mühendislik portfolyosu.',
+    category: 'Web / Bulut',
+    is_featured: true,
+  },
+  'omerabali': {
+    display_name: 'omerabali — GitHub Geliştirici Profili & Ekosistem',
+    description: 'Yazılım mühendisliği yetkinlikleri, açık kaynak çalışmaları ve kişisel GitHub geliştirici profili dokümantasyonu.',
+    category: 'Yazılım',
+  },
   'terrawatch': {
     display_name: 'TerraWatch — Akıllı Tarım & IoT Analiz Platformu',
     description: 'React 18, TypeScript ve Supabase ile geliştirilen otonom tarımsal sensör izleme ve sinyal analiz ekosistemi.',
@@ -84,6 +84,6 @@ export const PROJECT_OVERRIDES: Record<
 };
 
 /**
- * Eğer GitHub'da Private olan veya API'ye yansımamış 60. bir projen varsa buraya doğrudan ekleyebilirsin.
+ * Varsa manuel eklenecek ek projeler
  */
 export const MANUAL_ADDITIONAL_REPOS: Project[] = [];

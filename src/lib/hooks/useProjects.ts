@@ -2,6 +2,11 @@ import { useCallback, useEffect, useState } from 'react';
 import type { Project } from '../../types/project';
 import { fetchProjects } from '../api/projects';
 import initialReposData from '../../data/repos.json';
+import {
+  EXCLUDED_REPOS,
+  PROJECT_OVERRIDES,
+  MANUAL_ADDITIONAL_REPOS,
+} from '../../config/portfolioProjects';
 
 interface ProjectsState {
   projects: Project[];
@@ -11,41 +16,72 @@ interface ProjectsState {
   reload: () => void;
 }
 
-// Map initial JSON fallback to Project format for instant 0ms paint
-const fallbackProjects: Project[] = (initialReposData as any[])
-  .map((r) => ({
-    slug: r.name ? r.name.toLowerCase() : '',
-    name: r.name || '',
-    display_name: r.display_name || r.name || '',
-    description: r.description || r.readme_summary || '',
-    readme_h1: r.readme_h1,
-    readme_summary: r.readme_summary,
-    readme_detail: r.readme_detail || r.readme_raw,
-    readme_raw: r.readme_raw,
-    readme_html: r.readme_html,
-    image_url: r.image_url,
-    category: r.category || 'Yazılım',
-    features: r.features || [],
-    tech_stack: r.tech_stack || [],
-    languages: r.languages || {},
-    github_url: r.html_url || `https://github.com/omerabali/${r.name}`,
-    homepage: r.homepage || null,
-    stars: r.stargazers_count || 0,
-    forks: r.forks_count || 0,
-    open_issues: 0,
-    topics: r.topics || [],
-    is_showcased: Boolean(r.is_featured || (r.topics && r.topics.includes('portfolio-featured'))),
-    created_at: r.created_at || r.updated_at || new Date().toISOString(),
-    updated_at: r.updated_at || new Date().toISOString(),
-    pushed_at: r.pushed_at || null,
-  }))
-  .sort((a, b) => {
-    const timeA = new Date(a.created_at || a.pushed_at || a.updated_at || 0).getTime();
-    const timeB = new Date(b.created_at || b.pushed_at || b.updated_at || 0).getTime();
-    return timeB - timeA;
+function curateProjects(rawProjects: Project[]): Project[] {
+  const excludedSet = new Set(EXCLUDED_REPOS.map((e) => e.toLowerCase()));
+
+  const filtered = rawProjects.filter((p) => {
+    const slug = (p.slug || '').toLowerCase();
+    const name = (p.name || '').toLowerCase();
+    return !excludedSet.has(slug) && !excludedSet.has(name);
   });
 
-const CACHE_KEY = 'portfolio_projects_cache_v5';
+  const overridden = filtered.map((p) => {
+    const slug = (p.slug || '').toLowerCase();
+    const name = (p.name || '').toLowerCase();
+    const override = PROJECT_OVERRIDES[slug] || PROJECT_OVERRIDES[name];
+
+    if (!override) return p;
+
+    return {
+      ...p,
+      display_name: override.display_name || p.display_name,
+      description: override.description || p.description,
+      category: override.category || p.category,
+      image_url: override.image_url || p.image_url,
+      is_showcased: override.is_featured ?? p.is_showcased,
+    };
+  });
+
+  const combined = [...MANUAL_ADDITIONAL_REPOS, ...overridden];
+
+  // En son push yapılan / güncellenen repo en üstte (GitHub ile birebir aynı sıra)
+  return combined.sort((a, b) => {
+    const timeA = new Date(a.pushed_at || a.updated_at || a.created_at || 0).getTime();
+    const timeB = new Date(b.pushed_at || b.updated_at || b.created_at || 0).getTime();
+    return timeB - timeA;
+  });
+}
+
+const rawInitialProjects: Project[] = (initialReposData as any[]).map((r) => ({
+  slug: r.name ? r.name.toLowerCase() : '',
+  name: r.name || '',
+  display_name: r.display_name || r.name || '',
+  description: r.description || r.readme_summary || '',
+  readme_h1: r.readme_h1,
+  readme_summary: r.readme_summary,
+  readme_detail: r.readme_detail || r.readme_raw,
+  readme_raw: r.readme_raw,
+  readme_html: r.readme_html,
+  image_url: r.image_url,
+  category: r.category || 'Yazılım',
+  features: r.features || [],
+  tech_stack: r.tech_stack || [],
+  languages: r.languages || {},
+  github_url: r.html_url || `https://github.com/omerabali/${r.name}`,
+  homepage: r.homepage || null,
+  stars: r.stargazers_count || 0,
+  forks: r.forks_count || 0,
+  open_issues: 0,
+  topics: r.topics || [],
+  is_showcased: Boolean(r.is_featured || (r.topics && r.topics.includes('portfolio-featured'))),
+  created_at: r.created_at || r.updated_at || new Date().toISOString(),
+  updated_at: r.updated_at || new Date().toISOString(),
+  pushed_at: r.pushed_at || null,
+}));
+
+const fallbackProjects: Project[] = curateProjects(rawInitialProjects);
+
+const CACHE_KEY = 'portfolio_projects_cache_v8';
 
 function getInitialCached(): { projects: Project[]; total: number } {
   try {
@@ -53,7 +89,7 @@ function getInitialCached(): { projects: Project[]; total: number } {
     if (stored) {
       const parsed = JSON.parse(stored);
       if (Array.isArray(parsed?.data) && parsed.data.length > 0) {
-        return { projects: parsed.data, total: parsed.total || parsed.data.length };
+        return { projects: parsed.data, total: Math.max(parsed.total || parsed.data.length, 60) };
       }
     }
   } catch {
@@ -61,15 +97,10 @@ function getInitialCached(): { projects: Project[]; total: number } {
   }
   return {
     projects: fallbackProjects,
-    total: fallbackProjects.length,
+    total: Math.max(fallbackProjects.length, 60),
   };
 }
 
-/**
- * Stale-While-Revalidate pattern:
- * 1. Sayfa açıldığı an 0.00 ms gecikmeyle yerel önbellekten (RAM/JSON) anında gösterilir.
- * 2. Arka planda sessizce /api/projects kontrol edilir, değişiklik varsa akıcı güncellenir.
- */
 export function useProjects(): ProjectsState {
   const initial = getInitialCached();
   const [projects, setProjects] = useState<Project[]>(initial.projects);
@@ -88,13 +119,13 @@ export function useProjects(): ProjectsState {
         if (!active) return;
         const data = res?.data ?? [];
         if (data.length > 0) {
-          setProjects(data);
-          const newTotal = res?.total ?? data.length;
+          const curated = curateProjects(data);
+          setProjects(curated);
+          const newTotal = Math.max(res?.total ?? curated.length, 60);
           setTotal(newTotal);
 
-          // Save in fast session storage
           try {
-            sessionStorage.setItem(CACHE_KEY, JSON.stringify({ data, total: newTotal }));
+            sessionStorage.setItem(CACHE_KEY, JSON.stringify({ data: curated, total: newTotal }));
           } catch {
             // Ignore
           }
@@ -102,7 +133,6 @@ export function useProjects(): ProjectsState {
       })
       .catch(() => {
         if (!active) return;
-        // If we already have cached projects, don't show an intrusive error
         if (projects.length === 0) {
           setError('Projeler şu anda yüklenemedi.');
         }

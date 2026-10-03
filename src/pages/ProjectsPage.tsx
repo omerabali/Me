@@ -63,10 +63,10 @@ export const ProjectsPage: React.FC = () => {
       return haystack.includes(q);
     });
 
-    // En son yüklenen / oluşturulan proje en üstte, en eski proje en altta
+    // En son push yapılan / güncellenen repo en üstte (GitHub ile birebir aynı sıra)
     return result.sort((a, b) => {
-      const timeA = new Date(a.created_at || a.pushed_at || a.updated_at || 0).getTime();
-      const timeB = new Date(b.created_at || b.pushed_at || b.updated_at || 0).getTime();
+      const timeA = new Date(a.pushed_at || a.updated_at || a.created_at || 0).getTime();
+      const timeB = new Date(b.pushed_at || b.updated_at || b.created_at || 0).getTime();
       return timeB - timeA;
     });
   }, [localizedProjects, projects, category, query, language]);
