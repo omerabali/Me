@@ -103,7 +103,7 @@ async function fetchRawReadme(repoName: string): Promise<{ raw: string; branch: 
   for (const branch of branches) {
     try {
       const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 3500);
+      const timeout = setTimeout(() => controller.abort(), 4000);
       const url = `https://raw.githubusercontent.com/omerabali/${repoName}/${branch}/README.md`;
       const res = await fetch(url, { signal: controller.signal });
       clearTimeout(timeout);
@@ -121,24 +121,148 @@ async function fetchRawReadme(repoName: string): Promise<{ raw: string; branch: 
   return null;
 }
 
+/**
+ * Canlı GitHub API'sinden omerabali kullanıcısının tüm depolarını çeker.
+ */
+async function fetchUserReposFromGitHub(): Promise<any[] | null> {
+  try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 7000);
+    const res = await fetch('https://api.github.com/users/omerabali/repos?per_page=100&sort=pushed', {
+      headers: {
+        'Accept': 'application/vnd.github.v3+json',
+        'User-Agent': 'omerabali-portfolio-builder',
+      },
+      signal: controller.signal,
+    });
+    clearTimeout(timeout);
+    if (res.ok) {
+      const data = await res.json();
+      if (Array.isArray(data) && data.length > 0) {
+        return data;
+      }
+    }
+  } catch (err) {
+    console.warn('GitHub API live request failed, using cached repos:', err);
+  }
+  return null;
+}
+
+function inferCategory(repo: any): 'AI/ML' | 'Full-Stack' | 'Mobile' | 'Backend / Systems' {
+  const lang = (repo.language || '').toLowerCase();
+  const name = (repo.name || '').toLowerCase();
+  const desc = (repo.description || '').toLowerCase();
+  const topics = (repo.topics || []).map((t: string) => t.toLowerCase());
+
+  if (lang === 'dart' || topics.includes('flutter') || name.includes('quiz_app') || desc.includes('flutter')) {
+    return 'Mobile';
+  }
+  if (
+    lang === 'python' ||
+    topics.includes('ai') ||
+    topics.includes('machine-learning') ||
+    name.includes('ai') ||
+    name.includes('segmentation') ||
+    name.includes('yolo') ||
+    name.includes('bot') ||
+    desc.includes('ai') ||
+    desc.includes('model')
+  ) {
+    return 'AI/ML';
+  }
+  if (
+    lang === 'typescript' ||
+    lang === 'javascript' ||
+    lang === 'html' ||
+    lang === 'css' ||
+    topics.includes('react') ||
+    topics.includes('web')
+  ) {
+    return 'Full-Stack';
+  }
+  return 'Backend / Systems';
+}
+
 async function syncAndEnrichRepos(): Promise<RepoItem[]> {
   const reposFilePath = path.join(process.cwd(), 'src', 'data', 'repos.json');
-  let currentRepos: RepoItem[] = [];
+  let localRepos: any[] = [];
 
   if (fs.existsSync(reposFilePath)) {
     try {
-      currentRepos = JSON.parse(fs.readFileSync(reposFilePath, 'utf-8'));
+      localRepos = JSON.parse(fs.readFileSync(reposFilePath, 'utf-8'));
     } catch (err) {
       console.warn('Existing repos.json could not be parsed:', err);
     }
   }
 
-  console.log(`Processing ${currentRepos.length} portfolio repositories...`);
+  const localMap = new Map<string, any>();
+  for (const r of localRepos) {
+    if (r.name) localMap.set(r.name.toLowerCase(), r);
+  }
 
-  // Her deponun README'sini canlı doğrula veya zenginleştir
+  // 1. Canlı GitHub API'sinden depoları çek
+  console.log('Fetching live repositories from GitHub API (user: omerabali)...');
+  const remoteRepos = await fetchUserReposFromGitHub();
+
+  let targetRepos: any[] = [];
+
+  if (remoteRepos && remoteRepos.length > 0) {
+    console.log(`✓ Fetched ${remoteRepos.length} repositories directly from GitHub API.`);
+    targetRepos = remoteRepos.map((ghRepo) => {
+      const existing = localMap.get(ghRepo.name.toLowerCase());
+      const cat = existing?.category || inferCategory(ghRepo);
+
+      // STAJ22001 veya diğer depolarda yapay 'Beacon' isimlendirmelerini temizle, gerçek repo ismini kullan
+      let cleanDisplayName = existing?.display_name || ghRepo.name;
+      if (cleanDisplayName.includes('Beacon') || ghRepo.name === 'STAJ22001') {
+        cleanDisplayName = 'STAJ22001 — Staj Dosyası & Projeleri';
+      }
+
+      let cleanSummary = existing?.readme_summary || ghRepo.description || '';
+      if (cleanSummary.includes('Beacon platformunu')) {
+        cleanSummary = 'Staj süreci boyunca geliştirilen alt projeleri, Web Workers çalışmalarını ve teknik dokümantasyonu içerir.';
+      }
+
+      return {
+        id: ghRepo.id || existing?.id || ghRepo.name.toLowerCase(),
+        name: ghRepo.name,
+        display_name: cleanDisplayName,
+        description: ghRepo.description || existing?.description || '',
+        html_url: ghRepo.html_url,
+        homepage: ghRepo.homepage || existing?.homepage || null,
+        language: ghRepo.language || existing?.language || null,
+        stargazers_count: ghRepo.stargazers_count ?? existing?.stargazers_count ?? 0,
+        forks_count: ghRepo.forks_count ?? existing?.forks_count ?? 0,
+        topics: ghRepo.topics || existing?.topics || [],
+        created_at: ghRepo.created_at || existing?.created_at || new Date().toISOString(),
+        updated_at: ghRepo.updated_at || existing?.updated_at || new Date().toISOString(),
+        pushed_at: ghRepo.pushed_at || existing?.pushed_at || null,
+        category: cat,
+        tech_stack: existing?.tech_stack || (ghRepo.language ? [ghRepo.language] : []),
+        features: existing?.features || [],
+        readme_raw: existing?.readme_raw || null,
+        readme_detail: existing?.readme_detail || null,
+        readme_summary: cleanSummary,
+        readme_h1: existing?.readme_h1 || null,
+        image_url: existing?.image_url || null,
+        is_featured: existing?.is_featured || false,
+      };
+    });
+  } else {
+    console.log(`Using ${localRepos.length} local repositories as fallback.`);
+    targetRepos = localRepos.map((r) => {
+      let dName = r.display_name || r.name;
+      if (dName.includes('Beacon') || r.name === 'STAJ22001') {
+        dName = 'STAJ22001 — Staj Dosyası & Projeleri';
+      }
+      return { ...r, display_name: dName };
+    });
+  }
+
+  // 2. Her deponun README'sini canlı doğrula veya zenginleştir
+  console.log(`Processing README and media for ${targetRepos.length} repositories...`);
   const updatedRepos = await Promise.all(
-    currentRepos.map(async (repo) => {
-      // Eğer deponun zaten detaylı bir README'si varsa koru, yoksa canlı çekmeyi dene
+    targetRepos.map(async (repo) => {
       if (!repo.readme_raw || repo.readme_raw.length < 50) {
         const rawResult = await fetchRawReadme(repo.name);
         if (rawResult) {

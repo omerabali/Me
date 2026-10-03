@@ -7,6 +7,7 @@ export interface Project {
   readme_detail?: string | null;
   readme_summary?: string | null;
   readme_raw?: string | null;
+  readme_html?: string | null;
   image_url?: string | null;
   tech_stack: string[];
   features?: string[];

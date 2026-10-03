@@ -32,7 +32,7 @@ export const HomePage: React.FC = () => {
   };
 
   const featured = useMemo(() => {
-    const prioritySlugs = ['staj22001', 'skill-identity-engine', 'ai-medium-design'];
+    const prioritySlugs = ['skill-identity-engine', 'ai-medium-design', 'desk-ai'];
     const selected: typeof projects = [];
 
     for (const slug of prioritySlugs) {
