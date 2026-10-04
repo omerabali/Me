@@ -15,13 +15,10 @@ import { Skeleton } from '../components/ui/Skeleton';
 import { Hero360Turntable } from '../components/ui/Hero360Turntable';
 import { Marquee } from '../components/ui/Marquee';
 import { EditorialProjectShowcase } from '../components/ui/EditorialProjectShowcase';
-import { ProjectModal } from '../components/ui/ProjectModal';
-import type { Project } from '../types/project';
 
 export const HomePage: React.FC = () => {
   const { projects, loading, total } = useProjects();
   const { t, language } = useTranslation();
-  const [activeProject, setActiveProject] = useState<Project | null>(null);
   const [copiedEmail, setCopiedEmail] = useState(false);
 
   const handleCopyEmail = (e: React.MouseEvent) => {
@@ -32,7 +29,7 @@ export const HomePage: React.FC = () => {
   };
 
   const featured = useMemo(() => {
-    const prioritySlugs = ['skill-identity-engine', 'ai-medium-design', 'desk-ai'];
+    const prioritySlugs = ['skill-identity-engine', 'ai-medium-design', 'staj22001'];
     const selected: typeof projects = [];
 
     for (const slug of prioritySlugs) {
@@ -175,7 +172,6 @@ export const HomePage: React.FC = () => {
                       key={project.slug || project.name}
                       project={project}
                       index={idx}
-                      onOpenModal={(p) => setActiveProject(p)}
                     />
                   ))}
             </div>
@@ -292,13 +288,6 @@ export const HomePage: React.FC = () => {
         </Reveal>
       </section>
 
-      {/* ===================================================================
-          README DETAY MODALI
-      =================================================================== */}
-      <ProjectModal
-        project={activeProject}
-        onClose={() => setActiveProject(null)}
-      />
     </div>
   );
 };

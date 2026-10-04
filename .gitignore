@@ -24,6 +24,17 @@ backend/.env.*
 *.key
 *.cert
 *.pfx
+*.p12
+*.keystore
+secrets/
+credentials.json
+service-account*.json
+.env.backup
+.env.bak
+*.env.local
+*.env.production
+!.env.example
+!backend/.env.example
 
 # Python Virtual Environments & Cache
 __pycache__/

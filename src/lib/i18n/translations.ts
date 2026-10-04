@@ -207,7 +207,7 @@ export const translations: Record<Language, Translations> = {
       badge2: 'Yapay Zeka & LLM',
       badge3: 'Mobil Uygulama Geliştirici',
       titleRole: 'AI Engineer · Mobile & Full-Stack Developer',
-      bio: 'Machine Learning ve Derin Öğrenme modellerini; Flutter ile akıcı mobil uygulamalara ve React & FastAPI ile modern Full-Stack web platformlarına dönüştürüyorum. AI Engineering ve Full-Stack Developer olarak ilerlemeyi hedefliyorum.',
+      bio: 'AI odaklı Yazılım Mühendisliği öğrencisiyim. Ölçeklenebilir SaaS, LLM entegreli sistemler ve full-stack uygulamalar geliştiriyorum; hedefim AI Engineer olarak uzmanlaşmak.',
       viewProfile: 'Profili Görüntüle',
       downloadCv: 'CV İndir',
       statRepos: 'Açık Kaynak',
@@ -309,13 +309,13 @@ export const translations: Record<Language, Translations> = {
       title: 'Hakkımda',
       roleBadge: 'AI ENGINEER · MOBILE & FULL-STACK',
       bioP1:
-        'Mühendislik vizyonumu; Machine Learning, Derin Öğrenme ve Üretken Yapay Zeka (AI) alanındaki teknik tutkum ile şekillendiriyorum. Kariyerimi yapay zekanın dönüştürücü gücüne adarken, bu modelleri yalnızca teoride bırakmayıp; gerçek dünya ihtiyaçlarına doğrudan yanıt veren uçtan uca üretime hazır ürünlere dönüştürüyorum.',
+        'AI odaklı bir Yazılım Mühendisliği öğrencisiyim. Makine öğrenmesi, bilgisayarlı görü ve generative AI ile ölçeklenebilir SaaS platformları, LLM entegreli sistemler ve full-stack uygulamalar geliştiriyorum. Hedefim AI Engineer alanında uzmanlaşmak.',
       bioP2:
-        'Yapay zeka zekasını kullanıcının parmak uçlarına taşımak adına; Flutter ve Dart ile modern, reaktif ve yüksek performanslı cross-platform mobil uygulamalar geliştiriyorum. Eş zamanlı olarak React, Next.js, TypeScript ve FastAPI ile asenkron, ölçeklenebilir ve sağlam Full-Stack web mimarileri inşa ediyorum.',
+        'Python, TypeScript, React, Flutter, Kotlin, Java ve C# ile üretim kalitesinde çözümler yazıyorum. Frontend ve backend’i birlikte ele alıyor; mobil tarafta Flutter/Kotlin, DevOps’ta Docker, AWS, Git ve Linux ile dağıtım süreçlerine de dokunuyorum. Temiz mimari ve ürün odaklı geliştirme benim için temel.',
       bioP3:
-        'Kırklareli Üniversitesi Yazılım Mühendisliği akademik başarım (3.62 GPA), Yukatek Bilişim A.Ş. bünyesinde tamamladığım Retrieval-Augmented Generation (RAG) & LLM Ar-Ge stajım ve açık kaynak ekosisteminde geliştirdiğim 60+ proje ile; Python, Java, C#, Dart ve TypeScript teknolojilerinde yüksek mühendislik standartlarıyla çözümler üretiyorum.',
+        'Kırklareli Üniversitesi Yazılım Mühendisliği 4. sınıf öğrencisiyim (GPA 3.62 / 4.00). Yukatek Bilişim’de RAG odaklı stajımda STAJ22001 / Beacon platformunu geliştirdim. GitHub’da 60’tan fazla proje ve 400’ün üzerinde algoritma çözümüyle teoriyi sahaya taşıyorum; şu an AI destekli içerik otomasyonu ve akıllı iletişim platformları üzerinde çalışıyorum.',
       quote:
-        'Machine Learning ve Derin Öğrenme vizyonunu; modern mobil ve full-stack mühendisliğiyle buluşturarak hayatı kolaylaştıran dijital ekosistemler inşa ediyorum.',
+        'Teorik bilgiyi ticari değeri olan generative AI ve full-stack ürünlere dönüştürmek istiyorum — model, arayüz ve altyapı aynı sistemin parçasıdır.',
       skillsTitle: 'Yetenekler & Uzmanlıklar',
       skillCategories: [
         {
@@ -335,6 +335,7 @@ export const translations: Record<Language, Translations> = {
           title: 'Mobil Uygulama Geliştirme (Mobile Dev)',
           skills: [
             'Flutter & Dart',
+            'Kotlin (Android)',
             'Cross-Platform Mobil Mimari (iOS / Android)',
             'Mobil UI/UX & Akıcı Animasyonlar',
             'State Management (Bloc / Provider)',
@@ -380,19 +381,19 @@ export const translations: Record<Language, Translations> = {
             'Linux / Bash Otomasyonu',
             'AWS & Bulut Dağıtım Süreçleri',
             'Veri Modellemesi & ETL',
-            'Akademik Mühendislik Disiplini (3.62 GPA)',
+            'Akademik Disiplin (GPA 3.62)',
           ],
         },
       ],
       educationTitle: 'Eğitim',
       educationItems: [
         {
-          degree: 'Yazılım Mühendisliği Lisans',
+          degree: 'Yazılım Mühendisliği Lisans (4. Sınıf)',
           school: 'Kırklareli Üniversitesi',
           period: '2023 — 2027',
-          gpa: 'GPA: 3.62 / 4.00 (Yüksek Onur)',
+          gpa: 'GPA: 3.62 / 4.00',
           description:
-            'Algoritma analizi, dağıtık sistemler mimarisi, yapay zeka, görüntü işleme ve veri yapıları odaklı lisans mühendisliği eğitimi.',
+            'Algoritmalar, veri yapıları, yapay zeka, görüntü işleme ve yazılım mimarisi odaklı lisans eğitimi. Aktif öğrenciyim.',
         },
       ],
       certificatesTitle: 'Sertifikalar & Eğitimler',
@@ -592,7 +593,7 @@ export const translations: Record<Language, Translations> = {
       badge2: 'AI & LLM Engineer',
       badge3: 'Mobile App Developer',
       titleRole: 'AI Engineer · Mobile & Full-Stack Developer',
-      bio: 'Transforming Machine Learning and Deep Learning models into fluid Flutter mobile apps and modern full-stack web platforms using React & FastAPI. Advancing as an AI Engineer and Full-Stack Developer.',
+      bio: 'AI-focused Software Engineering student building scalable SaaS, LLM-integrated systems, and full-stack apps — aiming to specialize as an AI Engineer.',
       viewProfile: 'View Profile',
       downloadCv: 'Download CV',
       statRepos: 'Open Source',
@@ -694,13 +695,13 @@ export const translations: Record<Language, Translations> = {
       title: 'About Me',
       roleBadge: 'AI ENGINEER · MOBILE & FULL-STACK',
       bioP1:
-        'I drive my software engineering journey through a profound passion for Machine Learning, Deep Learning, and Generative AI. While dedicating my career to the transformative power of artificial intelligence, I ensure these models go beyond research into production-ready, highly reliable real-world systems.',
+        'I am an AI-focused Software Engineering student experienced in building scalable SaaS platforms, LLM-integrated systems, and full-stack applications. I work with machine learning, computer vision, and AI-driven automation, aiming to specialize as an AI Engineer.',
       bioP2:
-        'To deliver intelligence directly to users, I build sleek, reactive, and high-performance cross-platform mobile apps with Flutter & Dart. Concurrently, I architect scalable, asynchronous Full-Stack web systems powered by React 19, Next.js, TypeScript, and FastAPI.',
+        'I ship with Python, TypeScript, React, Flutter, Kotlin, Java, and C#. I cover frontend and backend together, build mobile apps with Flutter/Kotlin, and handle DevOps with Docker, AWS, Git, and Linux — grounded in system design, clean architecture, and product-oriented development.',
       bioP3:
-        'Backed by my Software Engineering academic honors (Kırklareli University - 3.62 GPA), my R&D internship at Yukatek Bilişim A.Ş. focusing on RAG & LLMs, and 60+ open-source repositories; I deliver robust engineering solutions across Python, Java, C#, Dart, and TypeScript.',
+        'I am a 4th-year Software Engineering student at Kırklareli University (GPA 3.62 / 4.00). During my RAG-focused internship at Yukatek Bilişim I built the Beacon platform under STAJ22001. With 60+ GitHub projects and 400+ algorithm solutions, I am currently developing AI-powered content automation and intelligent communication platforms.',
       quote:
-        'Channeling the visionary power of Machine Learning & Deep Learning into everyday life through cutting-edge mobile and full-stack engineering.',
+        'I want to turn theory into commercially viable generative AI and full-stack products — where model, interface, and infrastructure work as one system.',
       skillsTitle: 'Skills & Capabilities',
       skillCategories: [
         {
@@ -720,6 +721,7 @@ export const translations: Record<Language, Translations> = {
           title: 'Mobile Application Development',
           skills: [
             'Flutter & Dart',
+            'Kotlin (Android)',
             'Cross-Platform Architecture (iOS / Android)',
             'Mobile UI/UX & Fluid Animations',
             'State Management (Bloc / Provider)',
@@ -765,19 +767,19 @@ export const translations: Record<Language, Translations> = {
             'Linux / Bash Automation',
             'AWS & Cloud Deployments',
             'Data Modeling & ETL Workflows',
-            'Academic Engineering Rigor (3.62 GPA)',
+            'Academic Discipline (GPA 3.62)',
           ],
         },
       ],
       educationTitle: 'Education',
       educationItems: [
         {
-          degree: 'B.Sc. in Software Engineering',
+          degree: 'B.Sc. in Software Engineering (4th Year)',
           school: 'Kırklareli University',
           period: '2023 — 2027',
-          gpa: 'GPA: 3.62 / 4.00 (High Honors)',
+          gpa: 'GPA: 3.62 / 4.00',
           description:
-            'Rigorous engineering curriculum focusing on algorithm analysis, distributed systems architecture, artificial intelligence, image processing, and data structures.',
+            'Focus on algorithms, data structures, AI, computer vision, and software architecture. Currently an active student.',
         },
       ],
       certificatesTitle: 'Certificates & Trainings',
@@ -977,7 +979,7 @@ export const translations: Record<Language, Translations> = {
       badge2: 'KI & LLM Ingenieur',
       badge3: 'Mobile App Entwickler',
       titleRole: 'AI Engineer · Mobile & Full-Stack Developer',
-      bio: 'Transformation von Machine Learning- und Deep Learning-Modellen in intuitive Flutter-Mobil-Apps und moderne Full-Stack-Webplattformen mit React & FastAPI. Zielgerichtet auf dem Weg als AI Engineer und Full-Stack Developer.',
+      bio: 'KI-fokussierter Softwaretechnik-Student: skalierbare SaaS, LLM-Systeme und Full-Stack-Apps — mit dem Ziel, als AI Engineer zu spezialisieren.',
       viewProfile: 'Profil ansehen',
       downloadCv: 'Lebenslauf herunterladen',
       statRepos: 'Open Source',
@@ -1079,13 +1081,13 @@ export const translations: Record<Language, Translations> = {
       title: 'Über mich',
       roleBadge: 'KI-INGENIEUR · MOBILE & FULL-STACK',
       bioP1:
-        'Meine Ingenieursreise wird von einer tiefen Leidenschaft für Machine Learning, Deep Learning und Generative KI angetrieben. Ich widme meine Karriere der transformativen Kraft der künstlichen Intelligenz und sorge dafür, dass diese Modelle zu praxistauglichen, produktionsreifen Systemen werden.',
+        'Ich bin ein KI-fokussierter Softwaretechnik-Student mit Erfahrung in skalierbaren SaaS-Plattformen, LLM-integrierten Systemen und Full-Stack-Anwendungen. Ich arbeite mit Machine Learning, Computer Vision und KI-Automatisierung — Ziel: Spezialisierung als AI Engineer.',
       bioP2:
-        'Um intelligente Funktionen direkt an Benutzer zu liefern, entwickle ich reaktive und performante Cross-Platform-Apps mit Flutter & Dart. Parallel dazu erstelle ich skalierbare, asynchrone Full-Stack-Webarchitekturen mit React 19, Next.js, TypeScript und FastAPI.',
+        'Ich entwickle mit Python, TypeScript, React, Flutter, Kotlin, Java und C#. Frontend und Backend gehören zusammen; mobil mit Flutter/Kotlin, DevOps mit Docker, AWS, Git und Linux — getragen von Systemdesign, Clean Architecture und produktorientierter Entwicklung.',
       bioP3:
-        'Mit akademischen Spitzenleistungen (Universität Kırklareli - 3.62 GPA), meinem F&E-Praktikum bei Yukatek Bilişim A.Ş. (RAG & LLMs) und 60+ Open-Source-Repositories liefere ich solide Ingenieurlösungen in Python, Java, C#, Dart und TypeScript.',
+        'Ich bin im 4. Studienjahr Softwaretechnik an der Universität Kırklareli (GPA 3.62 / 4.00). Im RAG-Praktikum bei Yukatek Bilişim entstand die Beacon-Plattform unter STAJ22001. Mit 60+ GitHub-Projekten und 400+ Algorithmus-Lösungen arbeite ich derzeit an KI-gestützter Content-Automation und intelligenten Kommunikationsplattformen.',
       quote:
-        'Verbindung von Machine Learning & Deep Learning mit moderner mobiler und Full-Stack-Technik zur Entwicklung zukunftssicherer digitaler Produkte.',
+        'Theorie soll zu kommerziell tragfähigen Generative-AI- und Full-Stack-Produkten werden — Modell, Oberfläche und Infrastruktur als ein System.',
       skillsTitle: 'Fähigkeiten & Kompetenzen',
       skillCategories: [
         {
@@ -1105,6 +1107,7 @@ export const translations: Record<Language, Translations> = {
           title: 'Mobile App-Entwicklung',
           skills: [
             'Flutter & Dart',
+            'Kotlin (Android)',
             'Cross-Platform-Architektur (iOS / Android)',
             'Mobile UI/UX & Flüssige Animationen',
             'State Management (Bloc / Provider)',
@@ -1150,19 +1153,19 @@ export const translations: Record<Language, Translations> = {
             'Linux / Bash Automatisierung',
             'AWS & Cloud Deployments',
             'Datenmodellierung & ETL',
-            'Akademische Ingenieursdisziplin (3.62 GPA)',
+            'Akademische Disziplin (GPA 3.62)',
           ],
         },
       ],
       educationTitle: 'Ausbildung',
       educationItems: [
         {
-          degree: 'B.Sc. in Softwaretechnik',
+          degree: 'B.Sc. Softwaretechnik (4. Studienjahr)',
           school: 'Universität Kırklareli',
           period: '2023 — 2027',
-          gpa: 'GPA: 3.62 / 4.00 (Hohe Auszeichnung)',
+          gpa: 'GPA: 3.62 / 4.00',
           description:
-            'Schwerpunkte in Algorithmen, verteilten Systemarchitekturen, Künstlicher Intelligenz, Bildverarbeitung und Datenstrukturen.',
+            'Schwerpunkte: Algorithmen, Datenstrukturen, KI, Bildverarbeitung und Softwarearchitektur. Aktiver Student.',
         },
       ],
       certificatesTitle: 'Zertifikate & Weiterbildungen',

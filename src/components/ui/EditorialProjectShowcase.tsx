@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import {
   ArrowUpRight,
   BookOpen,
@@ -14,7 +15,6 @@ import type { Project } from '../../types/project';
 interface EditorialProjectShowcaseProps {
   project: Project;
   index: number;
-  onOpenModal: (project: Project) => void;
 }
 
 function getProjectScreenshot(project: Project): string {
@@ -37,20 +37,21 @@ function getProjectScreenshot(project: Project): string {
 export const EditorialProjectShowcase: React.FC<EditorialProjectShowcaseProps> = ({
   project,
   index,
-  onOpenModal,
 }) => {
   const { t, language } = useTranslation();
   const isReversed = index % 2 === 1;
   const screenshot = getProjectScreenshot(project);
+  const detailPath = `/projects/${project.slug || project.name}`;
+  const showReadme = project.has_readme === true;
 
   return (
     <article
       data-cursor="view"
-      onClick={() => onOpenModal(project)}
-      className="group relative flex flex-col overflow-hidden rounded-3xl border border-rule bg-surface/80 shadow-xl backdrop-blur-md transition-all duration-300 hover:border-accent/50 hover:shadow-2xl lg:grid lg:grid-cols-12 cursor-pointer"
+      className="group relative flex flex-col overflow-hidden rounded-3xl border border-rule bg-surface/80 shadow-xl backdrop-blur-md transition-all duration-300 hover:border-accent/50 hover:shadow-2xl lg:grid lg:grid-cols-12"
     >
       {/* 1. GÖRSEL VİTRİN ALANI (7 Kolon - Siyah Arka Plan, Tam Görsel) */}
-      <div
+      <Link
+        to={showReadme ? detailPath : project.github_url || detailPath}
         className={`relative flex min-h-[280px] sm:min-h-[360px] lg:min-h-full w-full items-center justify-center overflow-hidden border-b border-rule/70 bg-[#07090e] p-3 sm:p-5 lg:p-6 ${
           isReversed
             ? 'lg:col-span-7 lg:col-start-6 lg:border-l'
@@ -72,11 +73,10 @@ export const EditorialProjectShowcase: React.FC<EditorialProjectShowcaseProps> =
           </div>
         )}
 
-        {/* Sıra Numarası Filigranı */}
         <div className="pointer-events-none absolute bottom-4 right-5 font-mono text-6xl font-black text-white/10 sm:text-7xl select-none">
           0{index + 1}
         </div>
-      </div>
+      </Link>
 
       {/* 2. BİLGİ & EDİTORYAL METİN ALANI (5 Kolon) */}
       <div
@@ -85,7 +85,6 @@ export const EditorialProjectShowcase: React.FC<EditorialProjectShowcaseProps> =
         }`}
       >
         <div>
-          {/* Üst Kategori ve Canlı Demo Rozeti */}
           <div className="flex flex-wrap items-center justify-between gap-2.5 border-b border-rule/60 pb-4">
             <span className="inline-flex items-center gap-1.5 rounded-md border border-accent/25 bg-accent/10 px-2.5 py-1 font-mono text-[11px] font-bold tracking-wider text-accent uppercase">
               <Sparkles className="h-3 w-3" />
@@ -100,19 +99,16 @@ export const EditorialProjectShowcase: React.FC<EditorialProjectShowcaseProps> =
             )}
           </div>
 
-          {/* Proje Başlığı */}
           <h3 className="mt-4 font-display text-xl font-bold tracking-tight text-ink transition-colors group-hover:text-accent sm:text-2xl">
-            {project.display_name || project.name}
+            <Link to={detailPath}>{project.display_name || project.name}</Link>
           </h3>
 
-          {/* Proje Açıklaması */}
           <p className="mt-3 text-sm leading-relaxed text-ink-2">
             {project.description ||
               project.readme_summary ||
               'Software architecture and engineering solution.'}
           </p>
 
-          {/* Öne Çıkan Mühendislik Vurguları (3 Madde) */}
           {project.features && project.features.length > 0 && (
             <div className="mt-5 space-y-2 border-t border-rule/40 pt-4">
               {project.features.slice(0, 3).map((feat, i) => (
@@ -124,7 +120,6 @@ export const EditorialProjectShowcase: React.FC<EditorialProjectShowcaseProps> =
             </div>
           )}
 
-          {/* Teknoloji Etiketleri */}
           {project.tech_stack && project.tech_stack.length > 0 && (
             <div className="mt-6 flex flex-wrap gap-1.5">
               {project.tech_stack.map((tech) => (
@@ -139,18 +134,21 @@ export const EditorialProjectShowcase: React.FC<EditorialProjectShowcaseProps> =
           )}
         </div>
 
-        {/* Alt Aksiyon Butonları & Linkler */}
         <div className="mt-8 flex flex-wrap items-center justify-between gap-3 border-t border-rule/60 pt-4">
-          <button
-            type="button"
-            className="inline-flex items-center gap-2 rounded-xl bg-accent px-4 py-2 font-display text-xs font-bold text-white shadow-sm transition-all hover:bg-accent-deep hover:shadow-md"
-          >
-            <BookOpen className="h-3.5 w-3.5" />
-            <span>{t.featured.architectureReadme}</span>
-            <ArrowUpRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-          </button>
+          {showReadme ? (
+            <Link
+              to={detailPath}
+              className="inline-flex items-center gap-2 rounded-xl bg-accent px-4 py-2 font-display text-xs font-bold text-white shadow-sm transition-all hover:bg-accent-deep hover:shadow-md"
+            >
+              <BookOpen className="h-3.5 w-3.5" />
+              <span>{t.featured.architectureReadme}</span>
+              <ArrowUpRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+            </Link>
+          ) : (
+            <span className="text-xs text-ink-3">README henüz yayınlanmadı</span>
+          )}
 
-          <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
+          <div className="flex items-center gap-2">
             {project.homepage && (
               <a
                 href={project.homepage}

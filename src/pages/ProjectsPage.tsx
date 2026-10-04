@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
 import {
   BookOpen,
   Code2,
@@ -10,7 +11,6 @@ import { useProjects } from '../lib/hooks/useProjects';
 import { Reveal } from '../components/ui/Reveal';
 import { Skeleton } from '../components/ui/Skeleton';
 import { GithubIcon } from '../components/ui/Icons';
-import { ProjectModal } from '../components/ui/ProjectModal';
 import { useTranslation } from '../lib/i18n/LanguageContext';
 import {
   CANONICAL_CATEGORIES,
@@ -18,8 +18,6 @@ import {
   getLocalizedCategory,
   getLocalizedProject,
 } from '../lib/i18n/projectLocalizer';
-import type { Project } from '../types/project';
-
 const ALL = 'all';
 
 export const ProjectsPage: React.FC = () => {
@@ -27,8 +25,6 @@ export const ProjectsPage: React.FC = () => {
   const { t, language } = useTranslation();
   const [category, setCategory] = useState<string>(ALL);
   const [query, setQuery] = useState('');
-  const [activeProject, setActiveProject] = useState<Project | null>(null);
-
   const localizedProjects = useMemo(() => {
     return projects.map((p) => getLocalizedProject(p, language));
   }, [projects, language]);
@@ -90,9 +86,11 @@ export const ProjectsPage: React.FC = () => {
         if (!aStarts && bStarts) return 1;
       }
 
-      // En son push yapılan / güncellenen repo en üstte (GitHub ile birebir aynı sıra)
-      const timeA = new Date(a.pushed_at || a.updated_at || a.created_at || 0).getTime();
-      const timeB = new Date(b.pushed_at || b.updated_at || b.created_at || 0).getTime();
+      const orderA = a.sort_order ?? 9999;
+      const orderB = b.sort_order ?? 9999;
+      if (orderA !== orderB) return orderA - orderB;
+      const timeA = new Date(a.updated_at || a.created_at || 0).getTime();
+      const timeB = new Date(b.updated_at || b.created_at || 0).getTime();
       return timeB - timeA;
     });
   }, [localizedProjects, projects, category, query, language]);
@@ -203,8 +201,8 @@ export const ProjectsPage: React.FC = () => {
               <Reveal key={project.slug || project.name} delay={(i % 6) * 50}>
                 <article className="neo-card group flex h-full flex-col justify-between overflow-hidden transition-all duration-300 hover:-translate-y-1.5 hover:border-accent/60">
                   {/* Üst Kart Önizleme / Görsel Alanı */}
-                  <div
-                    onClick={() => setActiveProject(project)}
+                  <Link
+                    to={`/projects/${project.slug || project.name}`}
                     className="relative flex h-44 w-full cursor-pointer items-center justify-center overflow-hidden border-b border-rule bg-linear-to-br from-surface to-paper-sunk p-6"
                   >
                     <div className="flex flex-col items-center justify-center text-center">
@@ -230,16 +228,15 @@ export const ProjectsPage: React.FC = () => {
                         <span>{project.stars}</span>
                       </div>
                     )}
-                  </div>
+                  </Link>
 
                   {/* Kart İçeriği & Açıklaması */}
                   <div className="flex flex-1 flex-col justify-between p-6">
                     <div>
-                      <h2
-                        onClick={() => setActiveProject(project)}
-                        className="cursor-pointer font-display text-base font-bold text-ink transition-colors group-hover:text-accent"
-                      >
-                        {project.display_name || project.name}
+                      <h2 className="font-display text-base font-bold text-ink transition-colors group-hover:text-accent">
+                        <Link to={`/projects/${project.slug || project.name}`}>
+                          {project.display_name || project.name}
+                        </Link>
                       </h2>
 
                       <p className="mt-2 text-xs leading-relaxed text-ink-2 line-clamp-3">
@@ -279,19 +276,20 @@ export const ProjectsPage: React.FC = () => {
                             </a>
                           )}
 
-                          <button
-                            type="button"
-                            onClick={() => setActiveProject(project)}
-                            className="inline-flex items-center gap-1 text-xs font-semibold text-accent hover:text-accent-deep transition-colors"
-                          >
-                            <BookOpen className="h-3.5 w-3.5" />
-                            <span>{t.projects.readme}</span>
-                          </button>
+                          {project.has_readme === true && (
+                            <Link
+                              to={`/projects/${project.slug || project.name}`}
+                              className="inline-flex items-center gap-1 text-xs font-semibold text-accent hover:text-accent-deep transition-colors"
+                            >
+                              <BookOpen className="h-3.5 w-3.5" />
+                              <span>{t.projects.readme}</span>
+                            </Link>
+                          )}
                         </div>
 
-                        {project.homepage && (
+                        {(project.demo_url || project.homepage) && (
                           <a
-                            href={project.homepage}
+                            href={project.demo_url || project.homepage || '#'}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="inline-flex items-center gap-1 text-xs font-semibold text-ink-2 hover:text-ink"
@@ -310,13 +308,6 @@ export const ProjectsPage: React.FC = () => {
         )}
       </div>
 
-      {/* -------------------------------------------------------------------
-          ZENGİN PROJE & README MODAL GÖRÜNTÜLEYİCİSİ (Markdown, Görseller & Diyagramlar)
-      ------------------------------------------------------------------- */}
-      <ProjectModal
-        project={activeProject}
-        onClose={() => setActiveProject(null)}
-      />
     </div>
   );
 };

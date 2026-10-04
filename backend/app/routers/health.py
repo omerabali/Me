@@ -15,6 +15,5 @@ async def health_check():
         status="healthy",
         app_name=settings.APP_NAME,
         environment=settings.ENVIRONMENT,
-        github_configured=bool(settings.GITHUB_USERNAME),
-        cache_ttl_seconds=settings.CACHE_TTL_SECONDS,
+        database_connected=True,
     )

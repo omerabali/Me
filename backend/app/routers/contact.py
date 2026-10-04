@@ -5,7 +5,7 @@ from pydantic import BaseModel, EmailStr
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
-from app.services.project_db_service import project_db_service
+from app.models.db_models import ContactMessageDB
 
 logger = logging.getLogger(__name__)
 
@@ -36,18 +36,20 @@ async def submit_contact_message(
     db: AsyncSession = Depends(get_db),
 ):
     try:
-        saved = await project_db_service.save_contact_message(
-            db=db,
-            name=payload.name,
-            email=payload.email,
-            message=payload.message,
-            subject=payload.subject,
+        msg = ContactMessageDB(
+            name=payload.name.strip(),
+            email=str(payload.email).strip().lower(),
+            message=payload.message.strip(),
+            subject=payload.subject.strip() if payload.subject else None,
         )
-        logger.info(f"Saved contact message #{saved.id} from {payload.name} ({payload.email})")
+        db.add(msg)
+        await db.commit()
+        await db.refresh(msg)
+        logger.info(f"Saved contact message #{msg.id} from {payload.name} ({payload.email})")
         return ContactResponse(
             success=True,
             message="Mesajınız başarıyla kaydedildi.",
-            id=saved.id,
+            id=msg.id,
         )
     except Exception as e:
         logger.error(f"Error saving contact message: {e}", exc_info=True)

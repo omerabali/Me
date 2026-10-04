@@ -11,6 +11,10 @@ export default defineConfig(() => {
   return {
     base,
     plugins: [react(), tailwindcss()],
+    test: {
+      environment: 'node',
+      include: ['src/**/*.test.ts', 'src/**/*.test.tsx'],
+    },
     server: {
       port: 5173,
       proxy: {

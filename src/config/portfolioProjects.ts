@@ -58,12 +58,12 @@ export const PROJECT_OVERRIDES: Record<
     display_name: 'STAJ22001 — Staj Dosyası & Projeleri',
     description: 'Staj süreci boyunca geliştirilen alt projeleri ve teknik çalışmaları içeren ana staj deposu.',
     category: 'Yazılım',
+    is_featured: true,
   },
   'desk-ai': {
     display_name: 'Desk-AI — Masaüstü Yapay Zeka Asistanı',
     description: 'TypeScript, React ve Python ile geliştirilmiş akıllı masaüstü üretkenlik ve görev otomasyon aracı.',
     category: 'Yapay Zeka',
-    is_featured: true,
   },
   'ai-medium-design': {
     display_name: 'AI Medium — Akıllı İçerik & Blog Platformu',

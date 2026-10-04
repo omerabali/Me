@@ -1,4 +1,7 @@
 @import "tailwindcss";
+@plugin "@tailwindcss/typography";
+/* Fenced code blokları her zaman koyu kabukta; token renkleri github-dark */
+@import "highlight.js/styles/github-dark.css";
 
 /* ==========================================================================
    DESIGN TOKENS & PALETTES
@@ -14,8 +17,8 @@
   --color-surface-hover: #f8fafc;
 
   --color-ink: #0f172a;
-  --color-ink-2: #475569;
-  --color-ink-3: #94a3b8;
+  --color-ink-2: #334155;
+  --color-ink-3: #64748b;
 
   --color-rule: #e2e8f0;
   --color-rule-strong: #cbd5e1;
@@ -358,6 +361,136 @@
   border-color: var(--color-rule);
   margin-top: 1.5rem;
   margin-bottom: 1.5rem;
+}
+
+/* ReadmeView: yüksek kontrast + liste düzeni (prose soluk başlık/linkleri ezer) */
+.readme-view {
+  color: var(--color-ink) !important;
+  text-align: left;
+  --tw-prose-body: var(--color-ink);
+  --tw-prose-headings: var(--color-ink);
+  --tw-prose-lead: var(--color-ink-2);
+  --tw-prose-links: var(--color-accent);
+  --tw-prose-bold: var(--color-ink);
+  --tw-prose-counters: var(--color-ink-2);
+  --tw-prose-bullets: var(--color-ink-2);
+  --tw-prose-hr: var(--color-rule);
+  --tw-prose-quotes: var(--color-ink-2);
+  --tw-prose-quote-borders: var(--color-rule-strong);
+  --tw-prose-captions: var(--color-ink-2);
+  --tw-prose-code: var(--color-ink);
+  --tw-prose-pre-code: var(--color-ink);
+  --tw-prose-pre-bg: var(--color-paper-sunk);
+  --tw-prose-th-borders: var(--color-rule);
+  --tw-prose-td-borders: var(--color-rule);
+  --tw-prose-invert-body: var(--color-ink);
+  --tw-prose-invert-headings: var(--color-ink);
+  --tw-prose-invert-links: var(--color-accent);
+  --tw-prose-invert-bold: var(--color-ink);
+  --tw-prose-invert-counters: var(--color-ink-2);
+  --tw-prose-invert-bullets: var(--color-ink-2);
+  --tw-prose-invert-quotes: var(--color-ink-2);
+  --tw-prose-invert-code: var(--color-ink);
+}
+
+.readme-view :is(h1, h2, h3, h4, h5, h6) {
+  color: var(--color-ink) !important;
+  font-weight: 700;
+}
+
+/* Prose gövde — kod bloğu / hljs span'larına dokunma (aksi halde koyu ink, koyu zeminde kaybolur) */
+.readme-view :is(p, li, td, th, blockquote) {
+  color: var(--color-ink);
+  text-align: left;
+}
+
+.readme-view :is(div):not(.readme-code-block):not(.readme-code-block *) {
+  color: var(--color-ink);
+  text-align: left;
+}
+
+.readme-view .readme-code-block,
+.readme-view .readme-code-block * {
+  text-align: left;
+}
+
+.readme-view .readme-code-block {
+  color: #e6edf3;
+}
+
+.readme-view .readme-code-block pre,
+.readme-view .readme-code-block code.hljs {
+  background: #0d1117 !important;
+  color: #e6edf3 !important;
+}
+
+/* highlight.js token renkleri github-dark.css'ten gelsin; ink override yok */
+
+.readme-view :is(a) {
+  color: var(--color-accent) !important;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  font-weight: 500;
+}
+
+.readme-view :is(a:hover) {
+  color: var(--color-accent-deep) !important;
+}
+
+.readme-view :where(ul, ol) {
+  list-style-position: outside;
+  padding-inline-start: 1.35rem;
+  margin-block: 0.75rem;
+}
+
+.readme-view :where(li) {
+  display: list-item;
+  margin-block: 0.35rem;
+  padding-inline-start: 0.15rem;
+  line-height: 1.65;
+}
+
+.readme-view :where(li > p) {
+  display: inline;
+  margin: 0;
+}
+
+.readme-view :where(strong, b) {
+  display: inline;
+  font-weight: 700;
+  color: var(--color-ink) !important;
+  white-space: normal;
+}
+
+.readme-view :where(td, th) {
+  vertical-align: top;
+  padding: 0.65rem 0.85rem;
+}
+
+.readme-view :where(td) .readme-inline-code,
+.readme-view :where(th) .readme-inline-code,
+.readme-view code.readme-inline-code {
+  display: inline;
+  white-space: nowrap;
+  color: var(--color-accent) !important;
+  background: var(--color-paper-sunk);
+  border: 1px solid var(--color-rule);
+  border-radius: 0.375rem;
+  padding: 0.1rem 0.4rem;
+  font-size: 0.85em;
+}
+
+.readme-view :where(p[align='center'], div[align='center'], center) {
+  text-align: center;
+}
+
+.readme-view .markdown-alert {
+  color: var(--color-ink);
+}
+
+.readme-view .markdown-alert-title {
+  color: var(--color-ink) !important;
+  font-weight: 700;
 }
 
 /* ==========================================================================

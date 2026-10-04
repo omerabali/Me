@@ -26,8 +26,36 @@ class Settings(BaseSettings):
         description="GitHub Personal Access Token for 5000 req/hr rate limit"
     )
 
+    # Admin Authentication & Security (SHA-256 + JWT)
+    # Hash üret: python -c "import hashlib; s='SALT'; p='SIFRE'; print(hashlib.sha256((s+p).encode()).hexdigest())"
+    ADMIN_PASSWORD_SHA256: Optional[str] = Field(
+        default=None, description="SHA-256(salt+password) hex digest"
+    )
+    ADMIN_PASSWORD_SALT: Optional[str] = Field(
+        default=None, description="Salt used when hashing admin password with SHA-256"
+    )
+    ADMIN_JWT_SECRET: Optional[str] = Field(
+        default=None, description="HS256 secret for admin JWT (min 32 chars in production)"
+    )
+    ADMIN_PASSWORD_HASH: Optional[str] = Field(
+        default=None, description="Legacy bcrypt hash (optional fallback)"
+    )
+    ADMIN_PASSWORD: Optional[str] = Field(
+        default=None, description="Dev-only plaintext fallback (ignored in production)"
+    )
+    ADMIN_SESSION_SECRET: Optional[str] = Field(
+        default=None,
+        description="Legacy fallback if ADMIN_JWT_SECRET unset (dev only; never use in production)",
+    )
+    # Site GitHub'dan otomatik senkron ETMEZ (README/admin manuel)
+    GITHUB_AUTO_SYNC: bool = Field(
+        default=False,
+        description="Always false: new repos/commits never auto-publish to the site",
+    )
+    GITHUB_OWNER: str = Field(default="omerabali", description="GitHub username or org for image resolution")
+
     # Cache Settings (in seconds)
-    CACHE_TTL_SECONDS: int = 1800
+    CACHE_TTL_SECONDS: int = 60
 
     # CORS Settings
     ALLOWED_ORIGINS: Union[List[str], str] = [

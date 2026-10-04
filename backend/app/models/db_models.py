@@ -20,37 +20,38 @@ class ProjectDB(Base):
 
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     slug = Column(String(255), unique=True, index=True, nullable=False)
-    name = Column(String(255), nullable=False)
-    display_name = Column(String(255), nullable=True)
-    description = Column(Text, nullable=True)
+    repo_name = Column(String(255), index=True, nullable=False)
     
-    # README details
-    readme_h1 = Column(String(255), nullable=True)
-    readme_summary = Column(Text, nullable=True)
-    readme_detail = Column(Text, nullable=True)
-    readme_raw = Column(Text, nullable=True)
-    readme_html = Column(Text, nullable=True)
+    # Çok dilli başlık ve açıklamalar
+    title_tr = Column(String(255), nullable=False)
+    title_en = Column(String(255), nullable=True)
+    description_tr = Column(Text, nullable=True)
+    description_en = Column(Text, nullable=True)
     
-    # Metadata & Categories
-    image_url = Column(String(500), nullable=True)
-    category = Column(String(100), default="Yazılım", index=True)
-    tech_stack = Column(JSON, default=list)
-    languages = Column(JSON, default=dict)
-    features = Column(JSON, default=list)
-    topics = Column(JSON, default=list)
+    # Kategori ve etiketler
+    category = Column(String(100), default="software-algo", index=True, nullable=False)
+    tags = Column(JSON, default=list)
     
-    # Links & Metrics
+    # Bağlantılar ve görseller
     github_url = Column(String(500), nullable=False)
-    homepage = Column(String(500), nullable=True)
+    demo_url = Column(String(500), nullable=True)
+    cover_image_url = Column(String(500), nullable=True)
+    
+    # Metrikler
     stars = Column(Integer, default=0, index=True)
     forks = Column(Integer, default=0)
-    open_issues = Column(Integer, default=0)
-    is_showcased = Column(Boolean, default=False, index=True)
     
-    # Timestamps
+    # README ham Markdown içeriği (PostgreSQL TEXT, sınırsız uzunluk)
+    readme_markdown = Column(Text, nullable=True)
+    readme_updated_at = Column(DateTime(timezone=True), nullable=True)
+    
+    # Yayın ve sıralama
+    is_published = Column(Boolean, default=True, index=True)
+    sort_order = Column(Integer, default=0, index=True)
+    
+    # Zaman damgaları
     created_at = Column(DateTime(timezone=True), default=utcnow)
     updated_at = Column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
-    synced_at = Column(DateTime(timezone=True), default=utcnow)
 
 
 class ContactMessageDB(Base):
