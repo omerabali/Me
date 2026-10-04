@@ -1,4 +1,4 @@
-# Railway / container entry for FastAPI portfolio API
+# Koyeb / container entry for FastAPI portfolio API
 FROM python:3.12-slim
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
@@ -24,5 +24,5 @@ USER appuser
 
 EXPOSE 8080
 
-# Host (Railway vb.) PORT enjekte eder
+# Host (Koyeb vb.) PORT enjekte eder — service port = 8080
 CMD ["sh", "-c", "uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8080} --proxy-headers --forwarded-allow-ips='*'"]

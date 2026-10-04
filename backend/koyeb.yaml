@@ -1,0 +1,36 @@
+# Koyeb Web Service — Control Panel'de de aynı ayarları kullan:
+#   Git work directory: backend
+#   Builder: Dockerfile
+#   Port: 8080 (http)
+#   Instance: Free
+#
+# CLI örneği:
+#   koyeb app init portfolio-api \
+#     --git github.com/omerabali/Me \
+#     --git-branch main \
+#     --git-workdir backend \
+#     --git-builder docker \
+#     --git-docker-dockerfile Dockerfile \
+#     --ports 8080:http \
+#     --routes /:8080 \
+#     --env PORT=8080 \
+#     --env ENVIRONMENT=production
+
+name: portfolio-api
+service:
+  type: web
+  instance_type: free
+  ports:
+    - port: 8080
+      protocol: http
+  routes:
+    - path: /
+      port: 8080
+  health_checks:
+    - grace_period: 30
+      interval: 30
+      restart_limit: 3
+      timeout: 10
+      http:
+        path: /api/health
+        port: 8080
