@@ -32,8 +32,9 @@ jobs:
 
       - name: Build site
         env:
-          # SnapDeploy API kökü — GitHub → Settings → Secrets → VITE_API_BASE_URL
-          # Örnek: https://portfolio-api.containers.snapdeploy.app
+          # Yedek Pages deploy — tercihen Render portfolio-api URL
+          # Secret: VITE_API_BASE_URL=https://portfolio-api-xxxx.onrender.com
+          # Asıl canlı site: Render portfolio-web (render.yaml)
           VITE_API_BASE_URL: ${{ secrets.VITE_API_BASE_URL }}
         run: npm run build
 

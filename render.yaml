@@ -1,0 +1,62 @@
+# Render Blueprint — portfolio API + static frontend
+# Dashboard: New → Blueprint → bu repo (omerabali/Me)
+# Secret env'leri (DATABASE_URL, ADMIN_*) ilk deploy sonrası Dashboard'dan doldur.
+
+services:
+  - type: web
+    name: portfolio-api
+    runtime: docker
+    plan: free
+    region: frankfurt
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      - key: ENVIRONMENT
+        value: production
+      - key: DEBUG
+        value: "False"
+      - key: PORT
+        value: "8080"
+      - key: GITHUB_OWNER
+        value: omerabali
+      - key: GITHUB_AUTO_SYNC
+        value: "false"
+      # Canlı frontend Render URL'ini deploy sonrası buraya/Dashboard'a ekle
+      - key: ALLOWED_ORIGINS
+        sync: false
+      - key: DATABASE_URL
+        sync: false
+      - key: ADMIN_PASSWORD_SALT
+        sync: false
+      - key: ADMIN_PASSWORD_SHA256
+        sync: false
+      - key: ADMIN_JWT_SECRET
+        sync: false
+      - key: GITHUB_TOKEN
+        sync: false
+
+  - type: web
+    name: portfolio-web
+    runtime: static
+    plan: free
+    region: frankfurt
+    autoDeploy: true
+    buildCommand: npm ci && npm run build
+    staticPublishPath: ./dist
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: NODE_VERSION
+        value: "20"
+      - key: VITE_BASE_PATH
+        value: /
+      # API public URL (https://portfolio-api-xxxx.onrender.com) — sonda / olmasın
+      - key: VITE_API_BASE_URL
+        fromService:
+          name: portfolio-api
+          type: web
+          envVarKey: RENDER_EXTERNAL_URL

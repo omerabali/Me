@@ -1,5 +1,5 @@
-# SnapDeploy / container entry for FastAPI portfolio API
-# Dashboard: root directory = backend, port = 8080, size = Small (free)
+# Render (Docker) — FastAPI portfolio API
+# Blueprint: render.yaml → portfolio-api | health: /api/health
 FROM python:3.12-slim
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
@@ -28,5 +28,5 @@ USER appuser
 
 EXPOSE 8080
 
-# Host (SnapDeploy) PORT enjekte eder — service port = 8080
+# Render PORT enjekte eder
 CMD ["sh", "-c", "uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8080} --proxy-headers --forwarded-allow-ips='*'"]
