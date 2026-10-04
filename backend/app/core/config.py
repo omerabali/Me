@@ -57,12 +57,13 @@ class Settings(BaseSettings):
     # Cache Settings (in seconds)
     CACHE_TTL_SECONDS: int = 60
 
-    # CORS Settings
+    # CORS Settings (production'da https://omerabali.github.io zorunlu)
     ALLOWED_ORIGINS: Union[List[str], str] = [
         "http://localhost:3000",
         "http://127.0.0.1:3000",
         "http://localhost:5173",
         "http://127.0.0.1:5173",
+        "https://omerabali.github.io",
     ]
 
     # Explicit Showcase Repositories

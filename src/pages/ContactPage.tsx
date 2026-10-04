@@ -8,6 +8,7 @@ import {
   Send,
 } from 'lucide-react';
 import { SITE } from '../lib/constants/site';
+import { API_BASE } from '../lib/apiClient';
 import { LinkedinIcon } from '../components/ui/Icons';
 import { Reveal } from '../components/ui/Reveal';
 import { useTranslation } from '../lib/i18n/LanguageContext';
@@ -61,7 +62,7 @@ export const ContactPage: React.FC = () => {
 
     // 1. Veritabanına (Neon PostgreSQL / API) kaydet
     try {
-      await fetch('/api/contact', {
+      await fetch(`${API_BASE}/api/contact`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(values),

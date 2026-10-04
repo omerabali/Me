@@ -1,6 +1,7 @@
 import type { AdminProject, Project, ProjectDetail } from '../types/project';
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL || '';
+/** Canlıda Cloud Run kökü (örn. https://xxx.run.app). Dev'de boş → Vite proxy. */
+export const API_BASE = (import.meta.env.VITE_API_BASE_URL || '').replace(/\/$/, '');
 
 function getCsrfTokenFromCookie(): string {
   if (typeof document === 'undefined') return '';

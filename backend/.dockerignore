@@ -1,0 +1,17 @@
+.env
+.env.*
+!.env.example
+.venv
+venv
+__pycache__
+*.py[cod]
+.pytest_cache
+.mypy_cache
+*.db
+*.sqlite
+*.sqlite3
+test_verification.py
+seed_from_static.py
+.git
+.gitignore
+**/*.md

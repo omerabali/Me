@@ -5,9 +5,10 @@ from fastapi import APIRouter, Depends, HTTPException, Request, Response, status
 from app.core.security import (
     COOKIE_NAME,
     CSRF_COOKIE_NAME,
-    JWT_EXPIRE_SECONDS,
     check_rate_limit,
     clear_attempts,
+    cookie_common_kwargs,
+    cookie_samesite_policy,
     cookie_secure_flag,
     create_csrf_token,
     create_session_token,
@@ -24,14 +25,7 @@ router = APIRouter(prefix="/api/admin/auth", tags=["admin-auth"])
 
 
 def _set_auth_cookies(response: Response, request: Request, jwt_token: str, csrf: str) -> None:
-    secure = cookie_secure_flag(request)
-    # SameSite=strict: CSRF'e karşı daha sıkı (Vite proxy ile aynı site)
-    common = {
-        "max_age": JWT_EXPIRE_SECONDS,
-        "samesite": "strict",
-        "secure": secure,
-        "path": "/",
-    }
+    common = cookie_common_kwargs(request)
     response.set_cookie(
         key=COOKIE_NAME,
         value=jwt_token,
@@ -46,9 +40,15 @@ def _set_auth_cookies(response: Response, request: Request, jwt_token: str, csrf
     )
 
 
-def _clear_auth_cookies(response: Response) -> None:
-    response.delete_cookie(key=COOKIE_NAME, path="/")
-    response.delete_cookie(key=CSRF_COOKIE_NAME, path="/")
+def _clear_auth_cookies(response: Response, request: Request) -> None:
+    # Tarayıcıların silmesi için set ile aynı samesite/secure gerekli
+    common = {
+        "path": "/",
+        "samesite": cookie_samesite_policy(),
+        "secure": cookie_secure_flag(request),
+    }
+    response.delete_cookie(key=COOKIE_NAME, **common)
+    response.delete_cookie(key=CSRF_COOKIE_NAME, **common)
 
 
 @router.post("/login", response_model=AdminAuthResponse)
@@ -79,8 +79,12 @@ async def login(req: AdminLoginRequest, request: Request, response: Response):
 
 
 @router.post("/logout", response_model=AdminAuthResponse)
-async def logout(response: Response, _admin: dict = Depends(require_admin_csrf)):
-    _clear_auth_cookies(response)
+async def logout(
+    request: Request,
+    response: Response,
+    _admin: dict = Depends(require_admin_csrf),
+):
+    _clear_auth_cookies(response, request)
     return AdminAuthResponse(authenticated=False, username="", message="Çıkış yapıldı.")
 
 

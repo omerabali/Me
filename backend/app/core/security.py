@@ -271,6 +271,23 @@ async def require_admin_csrf(
 
 
 def cookie_secure_flag(request: Request) -> bool:
-    if settings.ENVIRONMENT == "production":
+    if _is_production():
         return True
     return request.url.scheme == "https"
+
+
+def cookie_samesite_policy() -> str:
+    """
+    Local (Vite proxy): Strict — aynı site.
+    Production (Pages → Cloud Run): None — cross-site cookie + CSRF double-submit.
+    """
+    return "none" if _is_production() else "strict"
+
+
+def cookie_common_kwargs(request: Request) -> dict:
+    return {
+        "max_age": JWT_EXPIRE_SECONDS,
+        "samesite": cookie_samesite_policy(),
+        "secure": cookie_secure_flag(request),
+        "path": "/",
+    }
