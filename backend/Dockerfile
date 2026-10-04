@@ -16,8 +16,8 @@ RUN apt-get update \
 COPY requirements.txt .
 RUN pip install --upgrade pip \
     && pip install -r requirements.txt \
-    && pip install --no-cache-dir "greenlet>=3.1.0" \
-    && python -c "import greenlet; import sqlalchemy; print('deps-ok', greenlet.__version__)"
+    && pip install --no-cache-dir "greenlet>=3.1.0" "email-validator>=2.1.0" \
+    && python -c "import greenlet, email_validator, sqlalchemy; from pydantic import EmailStr; print('deps-ok')"
 
 COPY app ./app
 
