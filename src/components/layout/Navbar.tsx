@@ -130,8 +130,8 @@ export const Navbar: React.FC = () => {
 
         {/* Sağ Araçlar (Dil Seçici, Tema, CV) */}
         <div className="flex items-center gap-2 sm:gap-3">
-          {/* Çok Dilli Seçici (TR / EN / DE) */}
-          <div className="relative" ref={langMenuRef}>
+          {/* Dil seçici — masaüstü; mobilde yalnızca çekmece içinde */}
+          <div className="relative hidden md:block" ref={langMenuRef}>
             <button
               type="button"
               onClick={() => setLangMenuOpen((v) => !v)}
@@ -144,7 +144,7 @@ export const Navbar: React.FC = () => {
             </button>
 
             {langMenuOpen && (
-              <div className="absolute right-0 top-full mt-2 w-32 rounded-xl border border-rule bg-paper p-1.5 shadow-xl backdrop-blur-xl z-50 animate-in fade-in zoom-in-95 duration-150">
+              <div className="absolute right-0 top-full z-[60] mt-2 w-32 rounded-xl border border-rule bg-paper p-1.5 shadow-xl">
                 {LANGUAGES.map((lang) => (
                   <button
                     key={lang.code}
@@ -210,7 +210,10 @@ export const Navbar: React.FC = () => {
           <button
             ref={triggerRef}
             type="button"
-            onClick={() => setOpen((v) => !v)}
+            onClick={() => {
+              setLangMenuOpen(false);
+              setOpen((v) => !v);
+            }}
             aria-expanded={open}
             aria-controls="mobile-menu"
             aria-label={open ? 'Menüyü kapat' : 'Menüyü aç'}
@@ -225,15 +228,29 @@ export const Navbar: React.FC = () => {
         </div>
       </div>
 
-      {/* Mobil Çekmece Menü */}
+      {/* Mobil Çekmece — tam ekran, opak; dil seçici yalnızca burada */}
       {open && (
         <div
           id="mobile-menu"
           ref={panelRef}
-          className="fixed inset-x-0 top-[60px] bottom-0 z-50 flex flex-col justify-between border-t border-rule bg-paper p-6 backdrop-blur-xl md:hidden overflow-y-auto"
+          className="fixed inset-0 z-[60] flex flex-col bg-paper md:hidden"
         >
+          <div className="flex items-center justify-between border-b border-rule px-4 py-3">
+            <span className="text-xs font-semibold uppercase tracking-wide text-ink-3">
+              Menü
+            </span>
+            <button
+              type="button"
+              onClick={close}
+              aria-label="Menüyü kapat"
+              className="flex h-9 w-9 items-center justify-center rounded-xl border border-rule bg-surface text-ink"
+            >
+              <X className="h-4 w-4" aria-hidden="true" />
+            </button>
+          </div>
+
+          <div className="flex flex-1 flex-col justify-between overflow-y-auto p-6">
           <div className="flex flex-col space-y-4">
-            {/* Dil Seçici (Mobil) */}
             <div className="flex items-center gap-2 rounded-xl border border-rule bg-surface p-1.5">
               {LANGUAGES.map((lang) => (
                 <button
@@ -289,6 +306,7 @@ export const Navbar: React.FC = () => {
           <div className="border-t border-rule pt-6">
             <p className="font-mono text-xs text-ink-3">{SITE.email}</p>
             <p className="mt-1 text-xs text-ink-3">© 2026 {SITE.name}</p>
+          </div>
           </div>
         </div>
       )}
