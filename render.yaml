@@ -1,6 +1,6 @@
-# Render Blueprint — portfolio API + static frontend
-# Dashboard: New → Blueprint → bu repo (omerabali/Me)
-# Secret env'leri (DATABASE_URL, ADMIN_*) ilk deploy sonrası Dashboard'dan doldur.
+# Render Blueprint — yalnızca backend API
+# Frontend: Vercel (+ custom domain)
+# Secret env'leri Dashboard'dan doldur (ALLOWED_ORIGINS = Vercel domain)
 
 services:
   - type: web
@@ -23,7 +23,7 @@ services:
         value: omerabali
       - key: GITHUB_AUTO_SYNC
         value: "false"
-      # Canlı frontend Render URL'ini deploy sonrası buraya/Dashboard'a ekle
+      # Örnek: https://senin-domain.com,https://xxx.vercel.app
       - key: ALLOWED_ORIGINS
         sync: false
       - key: DATABASE_URL
@@ -36,27 +36,3 @@ services:
         sync: false
       - key: GITHUB_TOKEN
         sync: false
-
-  - type: web
-    name: portfolio-web
-    runtime: static
-    plan: free
-    region: frankfurt
-    autoDeploy: true
-    buildCommand: npm ci && npm run build
-    staticPublishPath: ./dist
-    routes:
-      - type: rewrite
-        source: /*
-        destination: /index.html
-    envVars:
-      - key: NODE_VERSION
-        value: "20"
-      - key: VITE_BASE_PATH
-        value: /
-      # API public URL (https://portfolio-api-xxxx.onrender.com) — sonda / olmasın
-      - key: VITE_API_BASE_URL
-        fromService:
-          name: portfolio-api
-          type: web
-          envVarKey: RENDER_EXTERNAL_URL
