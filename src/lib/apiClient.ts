@@ -1,7 +1,23 @@
 import type { AdminProject, Project, ProjectDetail } from '../types/project';
 
-/** Canlıda Cloud Run kökü (örn. https://xxx.run.app). Dev'de boş → Vite proxy. */
-export const API_BASE = (import.meta.env.VITE_API_BASE_URL || '').replace(/\/$/, '');
+/** Markdown/yanlış yapıştırma temizliği: sadece https://host kökü kalsın. */
+function normalizeApiBase(raw: string): string {
+  let s = (raw || '').trim();
+  if (!s) return '';
+  // `[text](https://...)` veya `https://...](https://...)` gibi hatalı yapıştırmalar
+  const markdownHref = s.match(/\]\((https?:\/\/[^)\s]+)\)/i);
+  if (markdownHref) {
+    s = markdownHref[1];
+  } else {
+    const broken = s.match(/^(https?:\/\/[^\]\s]+)\]\(/i);
+    if (broken) s = broken[1];
+  }
+  s = s.replace(/\/$/, '');
+  return s;
+}
+
+/** Canlıda Render API kökü (örn. https://me-vkjy.onrender.com). Dev'de boş → Vite proxy. */
+export const API_BASE = normalizeApiBase(import.meta.env.VITE_API_BASE_URL || '');
 
 function getCsrfTokenFromCookie(): string {
   if (typeof document === 'undefined') return '';
