@@ -7,6 +7,7 @@ import {
   Mail,
 } from 'lucide-react';
 import { useProjects } from '../lib/hooks/useProjects';
+import { FEATURED_PRIORITY_SLUGS } from '../lib/staticProjects';
 import { useTranslation } from '../lib/i18n/LanguageContext';
 import { getLocalizedProject } from '../lib/i18n/projectLocalizer';
 import { CountUp } from '../components/ui/CountUp';
@@ -29,10 +30,9 @@ export const HomePage: React.FC = () => {
   };
 
   const featured = useMemo(() => {
-    const prioritySlugs = ['skill-identity-engine', 'ai-medium-design', 'staj22001'];
     const selected: typeof projects = [];
 
-    for (const slug of prioritySlugs) {
+    for (const slug of FEATURED_PRIORITY_SLUGS) {
       const found = projects.find(
         (p) =>
           p.slug?.toLowerCase() === slug ||
