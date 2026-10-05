@@ -122,7 +122,7 @@ export const Hero360Turntable: React.FC = () => {
         setTilt({ x: 0, y: 0 });
       }}
       onMouseMove={handleMouseMove}
-      className="relative w-full min-h-[calc(100vh-5rem)] flex flex-col justify-center overflow-hidden px-6 sm:px-10 lg:px-16 py-12 lg:py-16 transition-colors duration-300 select-text"
+      className="relative w-full min-h-[calc(100svh-5rem)] flex flex-col justify-start lg:justify-center overflow-x-hidden px-6 sm:px-10 lg:px-16 pt-6 pb-10 sm:py-12 lg:py-16 transition-colors duration-300 select-text"
       style={{ perspective: 1800 }}
     >
       {/* -------------------------------------------------------------------
@@ -134,12 +134,12 @@ export const Hero360Turntable: React.FC = () => {
       {/* -------------------------------------------------------------------
           2. ASİMETRİK EDİTORYAL YERLEŞİM (Ömer Abalı Gerçek Kimliği)
       ------------------------------------------------------------------- */}
-      <div className="relative z-20 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center flex-1 my-auto w-full max-w-[1520px] mx-auto">
+      <div className="relative z-20 grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 lg:gap-12 items-center w-full max-w-[1520px] mx-auto lg:flex-1 lg:my-auto">
         
         {/* SOL KOLON (7 Kolon): Ömer Abalı Unvanı & Özellikleri */}
         <div className="lg:col-span-7 flex flex-col items-start text-left pointer-events-auto select-text">
           {/* Şık, Minimal Editoryal Rozet */}
-          <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full border border-rule-strong/70 bg-surface/90 text-ink mb-4 shadow-2xs backdrop-blur-md">
+          <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full border border-rule-strong/70 bg-surface/90 text-ink mb-3 sm:mb-4 shadow-2xs backdrop-blur-md">
             <span className="h-2 w-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.6)] animate-pulse" />
             <span className="font-mono text-[11px] sm:text-xs font-semibold tracking-wider uppercase text-ink">
               {t.hero.greetingBadge}
@@ -147,22 +147,22 @@ export const Hero360Turntable: React.FC = () => {
           </div>
 
           {/* Gerçek Unvan */}
-          <h1 className="font-display text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-black tracking-tighter text-ink uppercase leading-[0.92]">
+          <h1 className="font-display text-4xl sm:text-6xl lg:text-7xl xl:text-8xl font-black tracking-tighter text-ink uppercase leading-[0.92]">
             {t.hero.titleMain}<br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-ink via-accent to-accent-deep">
               {t.hero.titleAccent}
             </span>
           </h1>
 
-          <p className="mt-6 max-w-xl text-sm sm:text-base text-ink-2 leading-relaxed font-medium select-text">
+          <p className="mt-4 sm:mt-6 max-w-xl text-sm sm:text-base text-ink-2 leading-relaxed font-medium select-text">
             {t.hero.bio}
           </p>
 
-          {/* Eylem Butonları */}
-          <div className="mt-8 flex flex-wrap items-center gap-4">
+          {/* Eylem Butonları — mobilde portreden önce görünür kalsın */}
+          <div className="mt-6 sm:mt-8 flex flex-wrap items-center gap-3 sm:gap-4">
             <Link
               to="/projects"
-              className="inline-flex items-center gap-2.5 rounded-full bg-ink px-7 py-3.5 font-display text-xs sm:text-sm font-bold text-paper shadow-xl hover:opacity-90 active:scale-98 transition-all"
+              className="inline-flex items-center gap-2.5 rounded-full bg-ink px-6 sm:px-7 py-3 sm:py-3.5 font-display text-xs sm:text-sm font-bold text-paper shadow-xl hover:opacity-90 active:scale-98 transition-all"
             >
               <span>{t.hero.ctaProjects}</span>
               <ArrowRight className="h-4 w-4" />
@@ -170,7 +170,7 @@ export const Hero360Turntable: React.FC = () => {
 
             <Link
               to="/contact"
-              className="inline-flex items-center gap-2 rounded-full border border-rule-strong bg-surface/70 px-6 py-3.5 font-display text-xs sm:text-sm font-bold text-ink hover:border-ink hover:bg-surface active:scale-98 transition-all shadow-xs"
+              className="inline-flex items-center gap-2 rounded-full border border-rule-strong bg-surface/70 px-5 sm:px-6 py-3 sm:py-3.5 font-display text-xs sm:text-sm font-bold text-ink hover:border-ink hover:bg-surface active:scale-98 transition-all shadow-xs"
             >
               <span>{t.hero.ctaContact}</span>
             </Link>
@@ -178,7 +178,7 @@ export const Hero360Turntable: React.FC = () => {
         </div>
 
         {/* SAĞ KOLON (5 Kolon): Temiz ve Sade 360° Portre */}
-        <div className="lg:col-span-5 flex items-center justify-center lg:justify-end relative my-4 lg:my-0">
+        <div className="lg:col-span-5 flex items-center justify-center lg:justify-end relative mt-2 sm:mt-4 lg:my-0">
           <div
             className="relative flex items-center justify-center transition-transform duration-100 ease-out cursor-grab active:cursor-grabbing select-none"
             style={{
@@ -195,8 +195,8 @@ export const Hero360Turntable: React.FC = () => {
             }}
             onTouchEnd={handleDragEnd}
           >
-            {/* Portre — Yörüngesiz, Doğal Stüdyo Aydınlatması */}
-            <div className="relative h-[360px] sm:h-[440px] lg:h-[480px] xl:h-[520px] max-h-[540px] aspect-square flex items-center justify-center overflow-visible">
+            {/* Portre — mobilde daha kompakt; CTA'ları ezmesin */}
+            <div className="relative h-[220px] sm:h-[360px] lg:h-[480px] xl:h-[520px] max-h-[540px] aspect-square flex items-center justify-center overflow-visible">
               <picture>
                 <source srcSet="/profile-avatar-studio.webp" type="image/webp" />
                 <img

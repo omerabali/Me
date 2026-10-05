@@ -66,7 +66,7 @@ export const HomePage: React.FC = () => {
   }, [projects, language]);
 
   return (
-    <div className="flex flex-col gap-24 sm:gap-32 pb-16 w-full overflow-hidden">
+    <div className="flex flex-col gap-24 sm:gap-32 pb-16 w-full overflow-x-hidden">
       {/* -------------------------------------------------------------------
           1. HERO BÖLÜMÜ — 360° DÖNEN KAHRAMAN SAHNESİ
       ------------------------------------------------------------------- */}

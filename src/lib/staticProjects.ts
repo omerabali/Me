@@ -1,4 +1,4 @@
-import type { Project } from '../types/project';
+import type { Project, ProjectDetail } from '../types/project';
 import { PROJECT_OVERRIDES } from '../config/portfolioProjects';
 import staticCatalog from '../data/projects.json';
 
@@ -8,6 +8,41 @@ export const FEATURED_PRIORITY_SLUGS = [
   'ai-medium-design',
   'staj22001',
 ] as const;
+
+const README_MODULES = import.meta.glob('../data/readmes/*.md', {
+  query: '?raw',
+  import: 'default',
+  eager: true,
+}) as Record<string, string>;
+
+function normalizeKey(value: string): string {
+  return value.toLowerCase().replace(/[^a-z0-9]/g, '');
+}
+
+function findStaticReadme(slug: string, repoName?: string): string | null {
+  const targets = [slug, repoName]
+    .filter(Boolean)
+    .map((v) => normalizeKey(String(v)));
+
+  for (const [path, content] of Object.entries(README_MODULES)) {
+    const base = path.split('/').pop()?.replace(/\.md$/i, '') ?? '';
+    const key = normalizeKey(base);
+    if (targets.includes(key)) {
+      return typeof content === 'string' ? content : null;
+    }
+  }
+
+  // Gevşek eşleşme: slug dosya adında geçiyorsa
+  for (const [path, content] of Object.entries(README_MODULES)) {
+    const base = path.split('/').pop()?.replace(/\.md$/i, '') ?? '';
+    const key = normalizeKey(base);
+    if (targets.some((t) => t.length > 2 && (key.includes(t) || t.includes(key)))) {
+      return typeof content === 'string' ? content : null;
+    }
+  }
+
+  return null;
+}
 
 type StaticRow = {
   slug: string;
@@ -92,4 +127,25 @@ export function getStaticFeaturedProjects(limit = 3): Project[] {
     }
   }
   return selected.slice(0, limit);
+}
+
+export function getStaticProjectDetail(slug: string): ProjectDetail | null {
+  const needle = slug.toLowerCase();
+  const project = STATIC_PROJECTS.find(
+    (p) =>
+      p.slug.toLowerCase() === needle ||
+      p.name.toLowerCase() === needle ||
+      p.repo_name?.toLowerCase() === needle ||
+      normalizeKey(p.slug) === normalizeKey(needle) ||
+      normalizeKey(p.name) === normalizeKey(needle),
+  );
+  if (!project) return null;
+
+  const readme = findStaticReadme(project.slug, project.repo_name || project.name);
+  return {
+    ...project,
+    has_readme: Boolean(readme),
+    readme_markdown: readme,
+    readme_raw: readme,
+  };
 }

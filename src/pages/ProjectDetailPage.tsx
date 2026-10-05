@@ -14,6 +14,7 @@ import {
 import { GithubIcon } from '../components/ui/Icons';
 import { ReadmeView } from '../components/ui/ReadmeView';
 import { fetchPublicProjectDetail } from '../lib/apiClient';
+import { getStaticProjectDetail } from '../lib/staticProjects';
 import { useTranslation } from '../lib/i18n/LanguageContext';
 import { getLocalizedCategory } from '../lib/i18n/projectLocalizer';
 import type { ProjectDetail } from '../types/project';
@@ -54,16 +55,27 @@ export const ProjectDetailPage: React.FC = () => {
     fetchPublicProjectDetail(slug)
       .then((data) => {
         if (!active) return;
-        if (!data) {
-          setError('Proje bulunamadı.');
-        } else {
+        if (data) {
           setProject(data);
+          return;
+        }
+        const fallback = getStaticProjectDetail(slug);
+        if (fallback) {
+          setProject(fallback);
+        } else {
+          setError('Proje bulunamadı.');
         }
       })
       .catch((err) => {
         if (!active) return;
-        console.error('Proje detayı yüklenirken hata:', err);
-        setError('Proje detayları ve README yüklenemedi. Lütfen tekrar deneyin.');
+        console.warn('Proje detayı API hatası, statik README deneniyor:', err);
+        const fallback = getStaticProjectDetail(slug);
+        if (fallback) {
+          setProject(fallback);
+          setError(null);
+        } else {
+          setError('Proje detayları ve README yüklenemedi. Lütfen tekrar deneyin.');
+        }
       })
       .finally(() => {
         if (active) setLoading(false);
