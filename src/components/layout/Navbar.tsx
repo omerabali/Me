@@ -9,10 +9,10 @@ import type { Language } from '../../lib/i18n/translations';
 import { cn } from '../../lib/utils/cn';
 import { Logo } from '../ui/Logo';
 
-const LANGUAGES: { code: Language; label: string; flag: string }[] = [
-  { code: 'tr', label: 'TR', flag: '🇹🇷' },
-  { code: 'en', label: 'EN', flag: '🇬🇧' },
-  { code: 'de', label: 'DE', flag: '🇩🇪' },
+const LANGUAGES: { code: Language; label: string }[] = [
+  { code: 'tr', label: 'TR' },
+  { code: 'en', label: 'EN' },
+  { code: 'de', label: 'DE' },
 ];
 
 export const Navbar: React.FC = () => {
@@ -155,14 +155,13 @@ export const Navbar: React.FC = () => {
                     close();
                   }}
                   className={cn(
-                    'flex flex-1 items-center justify-center gap-1.5 rounded-lg py-2.5 text-xs font-semibold transition-all',
+                    'flex flex-1 items-center justify-center rounded-lg py-2.5 text-xs font-semibold transition-all',
                     language === lang.code
                       ? 'bg-accent text-white shadow-xs'
                       : 'text-ink-2 hover:text-ink',
                   )}
                 >
-                  <span>{lang.flag}</span>
-                  <span>{lang.label}</span>
+                  {lang.label}
                 </button>
               ))}
             </div>
@@ -245,10 +244,7 @@ export const Navbar: React.FC = () => {
                           : 'text-ink hover:bg-surface',
                       )}
                     >
-                      <span className="flex items-center gap-1.5">
-                        <span>{lang.flag}</span>
-                        <span>{lang.label}</span>
-                      </span>
+                      <span>{lang.label}</span>
                       {language === lang.code && (
                         <span className="text-[10px] uppercase opacity-80">✓</span>
                       )}
