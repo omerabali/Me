@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   ArrowRight,
@@ -6,6 +6,7 @@ import {
   Copy,
   Mail,
 } from 'lucide-react';
+import { API_BASE } from '../lib/apiClient';
 import { useProjects } from '../lib/hooks/useProjects';
 import { FEATURED_PRIORITY_SLUGS } from '../lib/staticProjects';
 import { useTranslation } from '../lib/i18n/LanguageContext';
@@ -21,6 +22,14 @@ export const HomePage: React.FC = () => {
   const { projects, loading, total } = useProjects();
   const { t, language } = useTranslation();
   const [copiedEmail, setCopiedEmail] = useState(false);
+
+  // Ana sayfa açılır açılmaz API'yi uyandır (Render cold start)
+  useEffect(() => {
+    const ctrl = new AbortController();
+    const url = `${API_BASE}/api/health`;
+    fetch(url, { signal: ctrl.signal, headers: { Accept: 'application/json' } }).catch(() => {});
+    return () => ctrl.abort();
+  }, []);
 
   const handleCopyEmail = (e: React.MouseEvent) => {
     e.preventDefault();

@@ -197,16 +197,23 @@ export const Hero360Turntable: React.FC = () => {
           >
             {/* Portre — Yörüngesiz, Doğal Stüdyo Aydınlatması */}
             <div className="relative h-[360px] sm:h-[440px] lg:h-[480px] xl:h-[520px] max-h-[540px] aspect-square flex items-center justify-center overflow-visible">
-              <img
-                src="/profile-avatar-studio.png"
-                alt="Ömer Abalı — Portre"
-                className="h-full w-full object-contain pointer-events-none transition-transform duration-75 ease-out drop-shadow-[0_20px_35px_rgba(0,0,0,0.15)] dark:drop-shadow-[0_25px_45px_rgba(0,0,0,0.8)]"
-                style={{
-                  transform: `translateX(${Math.sin((rotation * Math.PI) / 180) * 14}px) scale(1.04)`,
-                  filter: `contrast(${1.01 + Math.abs(Math.sin((rotation * Math.PI) / 180)) * 0.05})`,
-                }}
-              />
-            </div>
+              <picture>
+                <source srcSet="/profile-avatar-studio.webp" type="image/webp" />
+                <img
+                  src="/profile-avatar-studio-sm.png"
+                  alt="Ömer Abalı — Portre"
+                  width={1040}
+                  height={1040}
+                  decoding="async"
+                  fetchPriority="high"
+                  loading="eager"
+                  className="h-full w-full object-contain pointer-events-none transition-transform duration-75 ease-out drop-shadow-[0_20px_35px_rgba(0,0,0,0.15)] dark:drop-shadow-[0_25px_45px_rgba(0,0,0,0.8)]"
+                  style={{
+                    transform: `translateX(${Math.sin((rotation * Math.PI) / 180) * 14}px) scale(1.04)`,
+                    filter: `contrast(${1.01 + Math.abs(Math.sin((rotation * Math.PI) / 180)) * 0.05})`,
+                  }}
+                />
+              </picture></div>
           </div>
         </div>
       </div>
