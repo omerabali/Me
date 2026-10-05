@@ -38,11 +38,18 @@ export const AboutPage: React.FC = () => {
           <div className="sticky top-24 neo-card flex flex-col items-center p-8 text-center">
             {/* Profil Avatarı & Çevrimiçi Noktası */}
             <div className="relative mb-5 flex h-36 w-36 items-center justify-center overflow-hidden rounded-3xl border-2 border-rule bg-linear-to-b from-surface to-paper-sunk shadow-lg group">
-              <img
-                src="/profile-avatar.png"
-                alt="Ömer Abalı Profil Fotoğrafı"
-                className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-              />
+              <picture>
+                <source srcSet="/profile-avatar.webp" type="image/webp" />
+                <img
+                  src="/profile-avatar-sm.png"
+                  alt="Ömer Abalı Profil Fotoğrafı"
+                  width={640}
+                  height={640}
+                  decoding="async"
+                  loading="eager"
+                  className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                />
+              </picture>
               <span
                 className="absolute right-2 bottom-2 h-4 w-4 rounded-full border-2 border-surface bg-positive ring-2 ring-positive/30"
                 title={t.hero.statusBadge}
