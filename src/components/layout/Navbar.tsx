@@ -112,22 +112,21 @@ export const Navbar: React.FC = () => {
       >
         <div className="flex min-h-0 flex-1 flex-col overflow-y-auto px-5 pb-6 pt-4">
           <nav aria-label="Mobil menü" className="flex flex-col gap-1">
-            {navItems.map((item, i) => (
+            {navItems.map((item) => (
               <NavLink
                 key={item.path}
                 to={item.path}
                 onClick={close}
                 className={({ isActive }) =>
                   cn(
-                    'flex items-center justify-between rounded-xl px-4 py-3.5 text-base font-semibold transition-colors',
+                    'rounded-xl px-4 py-3.5 text-base font-semibold transition-colors',
                     isActive
                       ? 'bg-accent/10 text-accent'
                       : 'text-ink hover:bg-surface hover:text-accent',
                   )
                 }
               >
-                <span>{item.label}</span>
-                <span className="font-mono text-xs text-ink-3">0{i + 1}</span>
+                {item.label}
               </NavLink>
             ))}
 
