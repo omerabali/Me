@@ -49,6 +49,8 @@ origins = settings.ALLOWED_ORIGINS if isinstance(settings.ALLOWED_ORIGINS, list)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
+    # Vercel preview/deploy URL'leri (me-xxxxx.vercel.app) için
+    allow_origin_regex=r"https://.*\.vercel\.app",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
