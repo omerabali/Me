@@ -131,7 +131,7 @@ export const Navbar: React.FC = () => {
             ))}
 
             <a
-              href={SITE.cv}
+              href={encodeURI(SITE.cv)}
               download={SITE.cvDownloadName}
               className="flex items-center justify-between rounded-xl px-4 py-3.5 text-base font-semibold text-ink hover:bg-surface"
             >
@@ -275,7 +275,7 @@ export const Navbar: React.FC = () => {
             </Link>
 
             <a
-              href={SITE.cv}
+              href={encodeURI(SITE.cv)}
               download={SITE.cvDownloadName}
               className="hidden items-center gap-1.5 rounded-xl border border-rule-strong bg-surface px-3.5 py-1.5 text-xs font-semibold text-ink shadow-2xs transition-all hover:border-ink hover:bg-surface-hover sm:flex"
             >
