@@ -11,9 +11,9 @@ export const SITE = {
   phone: '+90 533 378 17 34',
   phoneHref: '+905333781734',
   location: 'Kırklareli / İstanbul',
-  /** Güncel CV dosyası (public/Ömer Abalı CV.pdf) */
-  cv: '/Ömer Abalı CV.pdf',
-  cvDownloadName: 'Ömer Abalı CV.pdf',
+  /** Güncel CV dosyası (public/Ömer Abalı Cv.pdf) */
+  cv: '/Ömer Abalı Cv.pdf',
+  cvDownloadName: 'Ömer Abalı Cv.pdf',
   github: 'https://github.com/omerabali',
   linkedin: 'https://linkedin.com/in/omerabali',
 } as const;
