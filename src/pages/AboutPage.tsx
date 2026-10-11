@@ -5,12 +5,14 @@ import {
   CheckCircle2,
   Compass,
   Database,
+  ExternalLink,
   GraduationCap,
   Server,
   Smartphone,
   Sparkles,
   User,
 } from 'lucide-react';
+import { CERTIFICATE_FILES } from '../lib/constants/certificates';
 import { SITE } from '../lib/constants/site';
 import { GithubIcon, LinkedinIcon } from '../components/ui/Icons';
 import { Reveal } from '../components/ui/Reveal';
@@ -241,41 +243,52 @@ export const AboutPage: React.FC = () => {
             </Reveal>
 
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              {t.about.certificateItems.map((cert, i) => (
-                <Reveal key={cert.title} delay={i * 50}>
-                  <div className="neo-card flex h-full flex-col justify-between p-5 transition-transform duration-200 hover:-translate-y-1">
-                    <div>
-                      <div className="flex items-center justify-between gap-2">
-                        <span className="inline-flex items-center gap-1.5 rounded-md border border-rule bg-surface px-2.5 py-1 font-mono text-[11px] font-semibold text-accent">
-                          <Award className="h-3 w-3 text-accent" />
-                          {cert.issuer}
-                        </span>
-                        <span className="font-mono text-xs text-ink-3">
-                          {cert.period}
-                        </span>
+              {t.about.certificateItems.map((cert, i) => {
+                const file = CERTIFICATE_FILES[i];
+                return (
+                  <Reveal key={cert.title} delay={i * 50}>
+                    <div className="neo-card flex h-full flex-col justify-between p-5 transition-transform duration-200 hover:-translate-y-1">
+                      <div>
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="inline-flex items-center gap-1.5 rounded-md border border-rule bg-surface px-2.5 py-1 font-mono text-[11px] font-semibold text-accent">
+                            <Award className="h-3 w-3 text-accent" />
+                            {cert.issuer}
+                          </span>
+                          <span className="font-mono text-xs text-ink-3">
+                            {cert.period}
+                          </span>
+                        </div>
+
+                        <h3 className="mt-3 font-display text-sm font-bold text-ink">
+                          {cert.title}
+                        </h3>
+
+                        <p className="mt-2 text-xs leading-relaxed text-ink-3">
+                          {cert.description}
+                        </p>
                       </div>
 
-                      <h3 className="mt-3 font-display text-sm font-bold text-ink">
-                        {cert.title}
-                      </h3>
-
-                      <p className="mt-2 text-xs leading-relaxed text-ink-3">
-                        {cert.description}
-                      </p>
+                      <div className="mt-4 flex items-center justify-between gap-3 border-t border-rule pt-3 text-[11px]">
+                        <span className="flex items-center gap-1 font-medium text-positive">
+                          <CheckCircle2 className="h-3.5 w-3.5" />
+                          {verifiedBadge}
+                        </span>
+                        {file ? (
+                          <a
+                            href={file}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1 font-semibold text-accent transition-colors hover:text-ink"
+                          >
+                            {t.about.viewCertificate}
+                            <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
+                          </a>
+                        ) : null}
+                      </div>
                     </div>
-
-                    <div className="mt-4 flex items-center justify-between border-t border-rule pt-3 text-[11px]">
-                      <span className="flex items-center gap-1 font-medium text-positive">
-                        <CheckCircle2 className="h-3.5 w-3.5" />
-                        {verifiedBadge}
-                      </span>
-                      <span className="font-mono text-[10px] text-ink-3/70">
-                        {cert.issuer}
-                      </span>
-                    </div>
-                  </div>
-                </Reveal>
-              ))}
+                  </Reveal>
+                );
+              })}
             </div>
           </section>
         </main>

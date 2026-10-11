@@ -117,6 +117,7 @@ export interface Translations {
     educationTitle: string;
     educationItems: EducationItem[];
     certificatesTitle: string;
+    viewCertificate: string;
     certificateItems: CertificateItem[];
   };
   experience: {
@@ -397,6 +398,7 @@ export const translations: Record<Language, Translations> = {
         },
       ],
       certificatesTitle: 'Sertifikalar & Eğitimler',
+      viewCertificate: 'Belgeyi Görüntüle',
       certificateItems: [
         {
           title: 'Makine Öğrenmesi Bootcamp',
@@ -783,6 +785,7 @@ export const translations: Record<Language, Translations> = {
         },
       ],
       certificatesTitle: 'Certificates & Trainings',
+      viewCertificate: 'View Certificate',
       certificateItems: [
         {
           title: 'Machine Learning Bootcamp',
@@ -1169,6 +1172,7 @@ export const translations: Record<Language, Translations> = {
         },
       ],
       certificatesTitle: 'Zertifikate & Weiterbildungen',
+      viewCertificate: 'Zertifikat ansehen',
       certificateItems: [
         {
           title: 'Machine Learning Bootcamp',
